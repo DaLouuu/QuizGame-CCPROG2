@@ -216,11 +216,13 @@ manageData()
    @param *numRecords - address of numRecords for modification
 */
 void
-addRecord(struct question[] records, int* numRecords)
+addRecord(struct question records[],
+		  int *count) 
 {
-	char questionText[200];
-    char answer[50];
     int i, j, found, topicIndex, questionNumber;
+    str50 topic, choices[3], answer;
+	str200 questionText;
+    int correctAns;
 
     // Prompt user for the question and answer pair
     printf("Enter question: ");
@@ -230,71 +232,144 @@ addRecord(struct question[] records, int* numRecords)
 
     // Check if the question-answer pair already exists in the records
     found = 0;
-    for (i = 0; i < *numRecords && !found; i++)
+    for (i = 0; i < *count && !found; i++) 
 	{
-    	if (strcmp(records[i].questionRext, questionText) == 0 && strcmp(records[i].choices[records[i].correctAns - 1], answer) == 0)
-    	{
-        	found = 1;
-        	
-        	printf("Record already exists:\n");
-        	printf("Question: %s", records[i].questionText);
-        	printf("Answer: %s", records[i].choices[records[i].correctAns - 1]);
-       		printf("Topic: %s\n", records[i].topic);
-        	printf("Choices:\n");
-        	
-        	for (j = 0; j < 3; j++)
-            	printf("%d. %s", j+1, records[i].choices[j]);
-        	printf("\n");
-    	}
-	}
+        if (strcmp(records[i].questionText, questionText) == 0 && strcmp(records[i].choices[records[i].correctAns - 1], answer) == 0) 
+		{
+            found = 1;
 
-    if (!found)
+            printf("Record already exists.:\n");
+            printf("Question: %s", records[i].questionText);
+            printf("Answer: %s", records[i].choices[records[i].correctAns - 1]);
+            printf("Topic: %s\n", records[i].topic);
+            printf("Choices:\n");
+
+            for (j = 0; j < 3; j++)
+                printf("%d. %s", j+1, records[i].choices[j]);
+            printf("\n");
+        }
+    }
+
+    if (!found) 
 	{
         // Prompt user for the remaining inputs
         printf("Enter topic: ");
-        fgets(records[*numRecords].topic, 50, stdin);
+        fgets(topic, 50, stdin);
         printf("Enter choice 1: ");
-        fgets(records[*numRecords].choices[0], 50, stdin);
+        fgets(choices[0], 50, stdin);
         printf("Enter choice 2: ");
-        fgets(records[*numRecords].choices[1], 50, stdin);
+        fgets(choices[1], 50, stdin);
         printf("Enter choice 3: ");
-        fgets(records[*numRecords].choices[2], 50, stdin);
+        fgets(choices[2], 50, stdin);
+        printf("Enter correct answer (1-3): ");
+        scanf("%d", &correctAns);
+        getchar(); // consume newline character
 
         // Assign the question number by finding the last question number of the given topic
         topicIndex = -1;
         questionNumber = 1;
-        for (i = 0; i < *numRecords; i++)
+        for (i = 0; i < *count; i++) 
 		{
-            if (strcmp(records[i].topic, records[*numRecords].topic) == 0)
+            if (strcmp(records[i].topic, topic) == 0) 
 			{
                 if (records[i].number >= questionNumber)
-                    question_number = records[i].number + 1;
-                    
+                    questionNumber = records[i].number + 1;
                 topicIndex = i;
             }
         }
-        if (topicIndex == -1) {
+        
+        if (topicIndex == -1)
             questionNumber = 1;
-        }
 
         // Store the information in the record and increment the number of records
-        records[*numRecords].number = question_number;
-        strcpy(records[*numRecords].questionText, questionText);
-        strcpy(records[*numRecords].choices[2], answer);
-        records[*numRecords].correctAns = 3;
-        (*numRecords)++;
+        records[*count].number = questionNumber;
+        strcpy(records[*count].topic, topic);
+        strcpy(records[*count].questionText, questionText);
+        strcpy(records[*count].choices[0], choices[0]);
+        strcpy(records[*count].choices[1], choices[1]);
+        strcpy(records[*count].choices[2], choices[2]);
+        records[*count].correctAns = correctAns;
+        (*count)++;
 
         printf("Record added successfully.\n");
     }
-
     printf("\n");
 }
 
-void 
-editRecord()
+
+void
+editRecord(struct question records[],
+		   int count)
 {
-	
+    int number, found = 0, i;
+    char choice;
+    str50 newTopic;
+    str200 newQuestionText;
+    str50 newChoice;
+    int newCorrectAns;
+    
+    printf("\nEnter the question number to edit: ");
+    scanf("%d", &number);
+    
+    for (i = 0; i < count; i++) {
+        if (records[i].number == number) {
+            found = 1;
+            printf("\nEditing record #%d:\n", number);
+            printf("Topic: %s", records[i].topic);
+            printf("Question text: %s", records[i].questionText);
+            printf("Choice A: %s", records[i].choices[0]);
+            printf("Choice B: %s", records[i].choices[1]);
+            printf("Choice C: %s", records[i].choices[2]);
+            printf("Correct answer: %d\n", records[i].correctAns);
+            
+            printf("\nEnter the new topic of the question: ");
+            scanf("%s", newTopic);
+            printf("Enter the new question text: ");
+            getchar();
+            fgets(newQuestionText, sizeof(newQuestionText), stdin);
+            printf("Enter the new choice A: ");
+            fgets(newChoice, sizeof(newChoice), stdin);
+            printf("Enter the new choice B: ");
+            fgets(newChoice, sizeof(newChoice), stdin);
+            printf("Enter the new choice C: ");
+            fgets(newChoice, sizeof(newChoice), stdin);
+            printf("Enter the new number of the correct answer (1-3): ");
+            scanf("%d", &newCorrectAns);
+            
+            printf("\nCurrent record:\n");
+            printf("Topic: %s", records[i].topic);
+            printf("Question text: %s", records[i].questionText);
+            printf("Choice A: %s", records[i].choices[0]);
+            printf("Choice B: %s", records[i].choices[1]);
+            printf("Choice C: %s", records[i].choices[2]);
+            printf("Correct answer: %d\n", records[i].correctAns);
+            
+            printf("\nWhich field would you like to edit?\n");
+            printf("1. Topic\n");
+            printf("2. Question text\n");
+            printf("3. Choices\n");
+            printf("4. Correct answer\n");
+            printf("5. Cancel\n");
+            printf("Enter your choice: ");
+            scanf(" %c", &choice);
+            
+            switch(choice) {
+                case '1':
+                    strcpy(records[i].topic, newTopic);
+                    break;
+                case '2':
+                    strcpy(records[i].questionText, newQuestionText);
+                    break;
+                case '3':
+                    printf("Enter the new choice A: ");
+                    fgets(records[i].choices[0], sizeof(records[i].choices[0]), stdin);
+                    printf("Enter the new choice B: ");
+                    fgets(records[i].choices[1], sizeof(records[i].choices[1]), stdin);
+                    printf("Enter the new choice C: ");
+                    fgets(records[i].choices[2], sizeof(records[i].choices[2]), stdin);
+                    break;
 }
+
 
 void 
 deleteRecord()

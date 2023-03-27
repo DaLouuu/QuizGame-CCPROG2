@@ -2,8 +2,8 @@
 Description: The program is a general knowledge quiz game that offers a venue
 			 for people to test their general knowledge.
 Programmed by: Dana Louise A. Guillarte S23A
-Last modified: March 11, 2023
-Version: 4
+Last modified: March 27, 2023
+Version: 5
 Acknowledgements:  
 */
 

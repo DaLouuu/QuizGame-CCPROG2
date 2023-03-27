@@ -7,14 +7,16 @@
 
 #define MAX_PASSWORD_LENGTH 20
 
-typedef char str100 [100];
+typedef char str100 [101];
+typedef char str50 [51];
+typedef char str200 [201];
 
 struct question
 {
-    char topic[50];
+    str50 topic;
     int number;
-    char questionText[200];
-    char choices[3][50];
+    str200 questionText;
+    str50 choices[3];
     int correctAns;
 };
 
