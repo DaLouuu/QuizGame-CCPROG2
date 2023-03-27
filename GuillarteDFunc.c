@@ -163,10 +163,15 @@ login(char adminPass[])
 
 }
 
+/* This function displays the user friendly Manage Data UI and manages
+   the question records of the game
+*/
 void
 manageData()
 {
 	int choice;
+	//Initial number of records to be modified
+	int numRecords = 7;
 	
     do
 	{
@@ -185,6 +190,7 @@ manageData()
 		{
             case 1:
                 printf("Add Record selected.\n");
+                addRecord(question[] records, &numRecords);s
                 break;
             case 2:
                 printf("Edit Record selected.\n");
@@ -202,4 +208,108 @@ manageData()
                 printf("Invalid choice. Try again.\n");
         }
     } while (choice != 5);
+}
+
+/* This function adds a question record to the structure of questions
+   in the program
+   @param question[] records - stored question records
+   @param *numRecords - address of numRecords for modification
+*/
+void
+addRecord(struct question[] records, int* numRecords)
+{
+	char questionText[200];
+    char answer[50];
+    int i, j, found, topicIndex, questionNumber;
+
+    // Prompt user for the question and answer pair
+    printf("Enter question: ");
+    fgets(questionText, 200, stdin);
+    printf("Enter answer: ");
+    fgets(answer, 50, stdin);
+
+    // Check if the question-answer pair already exists in the records
+    found = 0;
+    for (i = 0; i < *numRecords && !found; i++)
+	{
+    	if (strcmp(records[i].questionRext, questionText) == 0 && strcmp(records[i].choices[records[i].correctAns - 1], answer) == 0)
+    	{
+        	found = 1;
+        	
+        	printf("Record already exists:\n");
+        	printf("Question: %s", records[i].questionText);
+        	printf("Answer: %s", records[i].choices[records[i].correctAns - 1]);
+       		printf("Topic: %s\n", records[i].topic);
+        	printf("Choices:\n");
+        	
+        	for (j = 0; j < 3; j++)
+            	printf("%d. %s", j+1, records[i].choices[j]);
+        	printf("\n");
+    	}
+	}
+
+    if (!found)
+	{
+        // Prompt user for the remaining inputs
+        printf("Enter topic: ");
+        fgets(records[*numRecords].topic, 50, stdin);
+        printf("Enter choice 1: ");
+        fgets(records[*numRecords].choices[0], 50, stdin);
+        printf("Enter choice 2: ");
+        fgets(records[*numRecords].choices[1], 50, stdin);
+        printf("Enter choice 3: ");
+        fgets(records[*numRecords].choices[2], 50, stdin);
+
+        // Assign the question number by finding the last question number of the given topic
+        topicIndex = -1;
+        questionNumber = 1;
+        for (i = 0; i < *numRecords; i++)
+		{
+            if (strcmp(records[i].topic, records[*numRecords].topic) == 0)
+			{
+                if (records[i].number >= questionNumber)
+                    question_number = records[i].number + 1;
+                    
+                topicIndex = i;
+            }
+        }
+        if (topicIndex == -1) {
+            questionNumber = 1;
+        }
+
+        // Store the information in the record and increment the number of records
+        records[*numRecords].number = question_number;
+        strcpy(records[*numRecords].questionText, questionText);
+        strcpy(records[*numRecords].choices[2], answer);
+        records[*numRecords].correctAns = 3;
+        (*numRecords)++;
+
+        printf("Record added successfully.\n");
+    }
+
+    printf("\n");
+}
+
+void 
+editRecord()
+{
+	
+}
+
+void 
+deleteRecord()
+{
+	
+}
+
+void
+importData()
+{
+	
+}
+
+void
+exportData()
+{
+	
 }

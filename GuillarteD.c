@@ -3,7 +3,7 @@ Description: The program is a general knowledge quiz game that offers a venue
 			 for people to test their general knowledge.
 Programmed by: Dana Louise A. Guillarte S23A
 Last modified: March 11, 2023
-Version: 2
+Version: 4
 Acknowledgements:  
 */
 
@@ -21,7 +21,7 @@ int
 main()
 {
 	//set password for manage data
-	char adminPass[MAX_PASSWORD_LENGTH] = "J^@n_D3l@cr^z";
+	char adminPass[MAX_PASSWORD_LENGTH] = "admin123";
 	//choice to start program
 	int progChoice = 100; 
     
