@@ -2,8 +2,8 @@
 Description: The program is a general knowledge quiz game that offers a venue
 			 for people to test their general knowledge.
 Programmed by: Dana Louise A. Guillarte S23A
-Last modified: March 27, 2023
-Version: 5
+Last modified: March 31, 2023
+Version: 7
 Acknowledgements:  
 */
 
@@ -20,35 +20,35 @@ Dana Louise Guillarte, DLSU ID# 12207101
 int
 main()
 {
-	//set password for manage data
+	//Sets password for manage data
 	str20 adminPass = "admin123";
-	//choice to start program
+	//Choice to start program
 	int progChoice = 100; 
     
     do
     {
-        //ensures that the title screen won't keep popping up after invalid input
+        //Ensures that the title screen won't keep popping up after invalid input
         if(progChoice == 100)
             titleScreen();
         
-        //gets main choice from user input
+        //Gets main choice from user input
         progChoice = promptChoice(1, 3);
             
-        //determines the game mode depending on the choice made by the user
+        //Determines the mode depending on the choice made by the user
         switch(progChoice)
         {
             case 1:
-                printf("You have selected play mode\n");
+                printf("\nYou have selected play mode\n\n");
                 progChoice = 100;
                 break;
             case 2:
-                printf("You have selected manage date mode\n");
-                //login(adminPass);
-                manageData();
+                printf("\nYou have selected manage data mode\n\n");
+                login(adminPass);
+                //manageData();
                 progChoice = 100;
                 break;
             case 3:
-                printf("See you next time!");
+                printf("\nSee you next time!");
                 break;
         }
     } while(progChoice != 3);

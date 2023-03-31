@@ -10,17 +10,17 @@
 #define MAX_RECORDS 1000
 #define MAX_CHOICES 3
 #define MAX_QTEXT 200
-#define MAX_TOPIC_ANS 50
-#define MAX_TOPIC 5
+#define MAX_TOPIC_LEN 50
+#define MAX_TOPICS 5
 
-typedef char str50 [MAX_TOPIC_ANS];
+typedef char str50 [MAX_TOPIC_LEN];
 typedef char str200 [MAX_QTEXT];
 typedef char str20 [MAX_PASS_LEN];
 
 
 struct question
 {
-    str50 topic[MAX_TOPIC];
+    str50 topic;
     int number;
     str200 questionText;
     str50 choices[MAX_CHOICES];
