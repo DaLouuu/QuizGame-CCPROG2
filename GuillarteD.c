@@ -21,7 +21,7 @@ int
 main()
 {
 	//set password for manage data
-	char adminPass[MAX_PASSWORD_LENGTH] = "admin123";
+	str20 adminPass = "admin123";
 	//choice to start program
 	int progChoice = 100; 
     
@@ -43,7 +43,8 @@ main()
                 break;
             case 2:
                 printf("You have selected manage date mode\n");
-                login(adminPass);
+                //login(adminPass);
+                manageData();
                 progChoice = 100;
                 break;
             case 3:
