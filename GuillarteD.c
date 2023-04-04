@@ -20,35 +20,48 @@ Dana Louise Guillarte, DLSU ID# 12207101
 int
 main()
 {
-	//Sets password for manage data
+	/* Sets password for manage data */
 	str20 adminPass = "admin123";
-	//Choice to start program
+	
+	/* Choice to start program */
 	int nMenuChoice = 100; 
     
     do
     {
-        //Ensures that the title screen won't keep popping up after invalid input
-        if(nMenuChoice == 100)
+        /* Ensures that the title screen won't keep popping up after invalid input */
+        if (nMenuChoice == 100)
             displayMenu();
         
-        //Gets main choice from user input
+        /* Gets main choice from user input */
         nMenuChoice = promptChoice(1, 3);
             
-        //Determines the mode depending on the choice made by the user
-        switch(nMenuChoice)
+        /* Determines the mode depending on the choice made by the user */
+        switch (nMenuChoice)
         {
+        	
+        	/* Selects play game */
             case 1:
                 printf("\nYou have selected play mode\n\n");
                 nMenuChoice = 100;
                 break;
+            
+            /* Selects manage data */
             case 2:
                 printf("\nYou have selected manage data mode\n\n");
                 login(adminPass);
                 nMenuChoice = 100;
                 break;
+                
+            /* Selects exit games */
             case 3:
                 printf("\nSee you next time!");
                 break;
+            
+            /* Invalid input */
+            default:
+			    printf("\n\nInvalid input. Please enter a valid choice.\n\n");
+			    nMenuChoice = 100;
+			break;
         }
-    } while(nMenuChoice != 3);
+    } while (nMenuChoice != 3);
 }

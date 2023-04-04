@@ -35,7 +35,7 @@ promptChoice(int nMin,
 			 int nMax);
 			 
 void
-login(char adminPass[]);
+login(str20 sAdminPass);
 
 void
 manageData();
@@ -44,7 +44,7 @@ int
 findRecord(struct question records[MAX_RECORDS],
 		   int nCount,
 		   char* pQText,
-		   char* pAns);
+		   char* pAnswer);
 		   
 int getLastQNum(struct question records[MAX_RECORDS],
 				int nCount,
@@ -64,20 +64,23 @@ displayTopics(struct question records[MAX_RECORDS],
 void
 displayQuestions(struct question records[MAX_RECORDS],
                  int nCount,
-                 char* sTopic,
-                 int qstIndices[MAX_RECORDS],
-                 int *nQstNum);
+                 char* pTopic,
+                 int arrQstIndices[MAX_RECORDS],
+                 int *pQstNum);
 
 void
 displayQuestion(struct question record);
                    
 int
 validateAnswer(struct question record,
-			   char sNewAns[MAX_STR_LEN]);
+               str50 sNewAns);
 
 void
 editRecord(struct question records[MAX_RECORDS],
 		   int nCount);
 
+int
+deleteRecord(struct question records[MAX_RECORDS],
+             int nCount);
 
 #endif
