@@ -3,51 +3,69 @@
 /*This function displays the title screen when you start the game up.
 */
 void
-titleScreen()
+displayMenu()
 {
-    int i;
+    int nBorder;
 
-    //Prints top border of title screen
-    for(i = 0; i < 50; i++)
+    /*Prints top border of title screen*/
+    for(nBorder = 0; nBorder < 50; nBorder++)
     {
-        if(i == 0)
-            printf("%c", 201); //prints ╔
-        else if (i == 49)
-            printf("%c", 187); //prints ╗
+    	
+    	/*Prints ╔*/
+        if(nBorder == 0)
+            printf("%c", 201);
+        
+        /*Prints ╗*/
+        else if(nBorder == 49)
+            printf("%c", 187);
+        
+        /*Prints ═*/
         else
-            printf("%c", 205); //prints ═
+            printf("%c", 205); 
     }
 
-    //Prints program title and author information
-    printf("\n%c%*s%*s%c\n", 186, 38, "~General Knowledge Quiz Game~", 10, " ", 186); //186 here is ║
-    printf("%c%*s%*s%c\n", 186, 36, "Dana Louise A. Guillarte", 12, " ", 186); //186 here is ║
-    printf("%c%*s%*s%c\n", 186, 25, "S23A", 23, " ", 186); //186 here is ║
+    /*Prints program title and author information, 186 here is ║*/
+    printf("\n%c%*s%*s%c\n", 186, 38, "~General Knowledge Quiz Game~", 10, " ", 186);
+    printf("%c%*s%*s%c\n", 186, 36, "Dana Louise A. Guillarte", 12, " ", 186);
+    printf("%c%*s%*s%c\n", 186, 25, "S23A", 23, " ", 186);
 
-    //Prints divider
-    for(i = 0; i < 50; i++)
+    /*Prints divider*/
+    for(nBorder = 0; nBorder < 50; nBorder++)
     {
-        if (i == 0)
-            printf("%c", 204); //Prints ╠
-        else if (i == 49)
-            printf("%c", 185); //Prints ╣
+    	
+    	/*Prints ╠*/
+        if (nBorder == 0)
+            printf("%c", 204);
+        
+        /*Prints ╣*/
+        else if (nBorder == 49)
+            printf("%c", 185);
+            
+        /*Prints ═*/
         else
-            printf("%c", 205); //Prints ═
+            printf("%c", 205);
     }
 
-    //Prints game options and exit
-    printf("\n%c%*s%*s%c", 186, 27, "[1] Play", 21, " ", 186); //186 here is ║
-    printf("\n%c%*s%*s%c", 186, 30, "[2] Manage Data", 18, " ", 186); //186 here is ║
-    printf("\n%c%*s%*s%c\n", 186, 27, "[3] Exit", 21, " ", 186); //186 here is ║
+    /*Prints game options and exit, 186 here is ║*/
+    printf("\n%c%*s%*s%c", 186, 27, "[1] Play", 21, " ", 186);
+    printf("\n%c%*s%*s%c", 186, 30, "[2] Manage Data", 18, " ", 186);
+    printf("\n%c%*s%*s%c\n", 186, 27, "[3] Exit", 21, " ", 186);
 
-    //Prints bottom border
-    for(i = 0; i < 50; i++)
+    /*Prints bottom border*/
+    for(nBorder = 0; nBorder < 50; nBorder++)
     {
-        if (i == 0)
-            printf("%c", 200); //prints ╚
-        else if (i == 49)
-            printf("%c\n", 188); //prints ╝
+    	
+    	/*prints ╚*/
+        if (nBorder == 0)
+            printf("%c", 200);
+        
+        /*prints ╝*/
+        else if (nBorder == 49)
+            printf("%c\n", 188);
+        
+        /*Prints ═*/
         else
-            printf("%c", 205); //prints ═
+            printf("%c", 205);
     }
 }
 
@@ -57,97 +75,115 @@ titleScreen()
    @return choice if the choice is in the range [min, max], else 0
 */
 int
-promptChoice(int min,
-			 int max)
+promptChoice(int nMin,
+			 int nMax)
 {
-    int choice;
+    int nChoice;
 
-        //Determines if user input is valid or invalid
-        do 
-        {
-                //Asks user for their choice
-                scanf("%d", &choice);
+    /*Loops until a valid input is received*/
+    do
+	{
+		
+        /*Prompts user for their choice*/
+        scanf("%d", &nChoice);
 
-                if (!(choice >= min && choice <= max))
-                {
-                    printf ("Invalid input!\n");
-                    printf ("Enter valid choice [%d - %d]: \n", min, max);
-                }
-        } while(!(choice >= min && choice <= max));
+        /*Checks if input is within valid range*/
+        if (!(nChoice >= nMin && nChoice <= nMax))
+		{
+            printf("Invalid input!\n");
+            printf("Enter valid choice [%d - %d]: \n", nMin, nMax);
+        }
+    } while (!(nChoice >= nMin && nChoice <= nMax));
 
-        return choice;
+    /*Returns the valid input*/
+    return nChoice;
 }
 
 /* This function accepts the password entered by the user and checks if correct
-   @param adminPass - array containing the admin password for checking
+   @param sAdminPass - array containing the admin password for checking
 */
-void login(str20 adminPass)
+void
+login(str20 sAdminPass)
 {
-    char password[MAX_PASS_LEN + 1];
-    char ch;
-    int i = 0, choice = 1;
+    char cInput;
+    char sPassword[MAX_PASS_LEN + 1];
+    int nCount = 0, nChoice = 1;
     
     printf("Enter admin password: ");
     
-    //Gets password from user
-    while((ch = getch()) != '\r' && i < MAX_PASS_LEN)
+    /*Gets password from user*/
+    while((cInput = getch()) != '\r' && nCount < MAX_PASS_LEN)
     {
-        if(ch == '\b' && i > 0)
+    	
+        /*If user presses backspace, move back one character and overwrite
+		  with a space*/
+        if(cInput == '\b' && nCount > 0)
         {
             printf("\b \b");
-            i--;
+            nCount--;
         }
-        else if(ch != '\b' && ch != '\t' && ch != 0)
+        
+        /*If user inputs any other character besides backspace, tab or null,
+		  print a * to screen and save to sPassword*/
+        else if(cInput != '\b' && cInput != '\t' && cInput != 0)
         {
             printf("*");
-            password[i++] = ch;
+            sPassword[nCount++] = cInput;
         }
     }
-    password[i] = '\0';
+    sPassword[nCount] = '\0';
     printf("\n");
     
-    while(strcmp(password, adminPass) != 0 && choice == 1)
+    /*If the password entered is incorrect, give the user the option to try again*/
+    while(strcmp(sPassword, sAdminPass) != 0 && nChoice == 1)
     {
         printf("Incorrect password.\n");
         printf("Press 1 to try again, or any other key to go back to main menu: ");
-        scanf("%d", &choice);
+        scanf("%d", &nChoice);
         
-        if(choice == 1)
+        if(nChoice == 1)
         {
             printf("Enter admin password: ");
-            i = 0;
-            //Gets password from user again
-            while((ch = getch()) != '\r' && i < MAX_PASS_LEN)
+            nCount = 0;
+            
+            /*Gets password from user again*/
+            while((cInput = getch()) != '\r' && nCount < MAX_PASS_LEN)
             {
-                if(ch == '\b' && i > 0)
+            	
+                /*If user presses backspace, move back one character and overwrite with a space*/
+                if(cInput == '\b' && nCount > 0)
                 {
                     printf("\b \b");
-                    i--;
+                    nCount--;
                 }
-                else if(ch != '\b' && ch != '\t' && ch != 0)
+                
+                /*If user inputs any other character besides backspace, tab or null, print a * to screen and save to sPassword*/
+                else if(cInput != '\b' && cInput != '\t' && cInput != 0)
                 {
                     printf("*");
-                    password[i++] = ch;
+                    sPassword[nCount++] = cInput;
                 }
             }
-            password[i] = '\0';
+            sPassword[nCount] = '\0';
             printf("\n");
         }
     }
     
-    if (strcmp(password, adminPass) == 0)
+    /*If the password entered is correct, login is successful and user is directed to manageData*/
+    if(strcmp(sPassword, sAdminPass) == 0)
     {
         printf("Login successful!\n\n");
-        //Displays user-friendly interface for managing data
+        
+        /*Displays user-friendly interface for managing data*/
         manageData();
     } 
     else
     {
         printf("Going back to main menu.\n\n");
-        //Goes back to main menu
-        titleScreen();
+        
+        /*Goes back to main menu*/
+        displayMenu();
     }
-
 }
 
 
@@ -157,15 +193,17 @@ void login(str20 adminPass)
 void
 manageData()
 {
-	int choice;
-	//Initial number of records to be modified
-	int numRecords = 7;
-	struct question records[MAX_RECORDS];
-	
+    int nChoice;
+    
+    /*Initial number of records to be modified*/
+    int nRecords = 0;
+    
+    /*Array of question records*/
+    struct question arrRecords[MAX_RECORDS];
+    
     do
-	{
+    {
         printf("MAIN MENU\n");
-        
         printf("1. Add Record\n");
         printf("2. Edit Record\n");
         printf("3. Import Data\n");
@@ -173,32 +211,114 @@ manageData()
         printf("5. Go Back to Main Menu\n");
         
         printf("Enter choice: ");
-        scanf("%d", &choice);
+        scanf("%d", &nChoice);
         
-        switch(choice)
-		{
+        switch(nChoice)
+        {
+        	
+            /*Adds a new record*/
             case 1:
                 printf("Add Record selected.\n\n");
-                numRecords = addRecord(records, numRecords);
+                
+                /*Increases the number of records by 1 after adding the new record*/
+                nRecords = addRecord(arrRecords, nRecords);
                 break;
+                
+            /*Edits an existing record*/
             case 2:
                 printf("Edit Record selected.\n\n");
-                editRecord(records, numRecords);
+                
+                /*Calls the editRecord function to edit a record*/
+                editRecord(arrRecords, nRecords);
                 break;
+                
+            /*Imports data from a file*/
             case 3:
                 printf("Import Data selected.\n\n");
                 break;
+                
+            /*Exports data to a file*/
             case 4:
                 printf("Export Data selected.\n\n");
                 break;
+                
+            /*Goes back to the main menu*/
             case 5:
                 printf("Going back to main menu.\n\n");
                 break;
+                
+            /*Invalid choice*/
             default:
                 printf("Invalid choice. Try again.\n\n");
         }
-    } while(choice != 5);
+    } while(nChoice != 5);
 }
+
+/* This function finds a record with the given question text and answer
+   @param records[MAX_RECORDS] - array of question records
+   @param nCount - number of records
+   @param questionText - the question text to search for
+   @param answer - the answer to search for
+   @return the index of the matching record, or -1 if no record is found
+*/
+int
+findRecord(struct question records[MAX_RECORDS],
+		   int nCount,
+		   char* pQText,
+		   char* answer)
+{
+	/*Initializes the variable to -1*/
+    int nRecordInd = -1;
+    int i;
+
+    /*Loops through the records and search for a match*/
+    for(i = 0; i < nCount; i++)
+    {
+        if(strcmp(records[i].sQText, pQText) == 0 && strcmp(records[i].sChoices[records[i].nCorrAns - 1], answer) == 0)
+        {
+        	
+        	/*Stores the index of the matching record*/
+            nRecordInd = i;
+        }
+    }
+    
+    /*Returns the index of the matching record, or -1 if no record is found*/
+    return nRecordInd;
+}
+
+
+/* This function returns the last question number for a specified topic from the array of question records
+   @param records[MAX_RECORDS] - array of question records
+   @param nCount - number of records
+   @param topic - the topic for which the last question number is to be found
+   @return the last question number found for the specified topic
+*/
+int getLastQNum(struct question records[MAX_RECORDS],
+				int nCount,
+				char* topic)
+{
+    int nLastQNum = 0;
+    int nIndex;
+    
+    for(nIndex = 0; nIndex < nCount; nIndex++)
+	{
+		
+        /*Checks if the record's topic matches the topic we're looking for*/
+        if (strcmp(records[nIndex].sTopic, topic) == 0)
+		{
+            /*Checks if the record's question number is greater than the last question number found*/
+            if (records[nIndex].nQNum > nLastQNum)
+			{
+                /*Updates the last question number to the question number of the current record*/
+                nLastQNum = records[nIndex].nQNum;
+            }
+        }
+    }
+    
+    /*Returns the last question number found for the specified topic*/
+    return nLastQNum;
+}
+
 
 /* This function adds a question record to the structure of questions
    in the program
@@ -207,141 +327,350 @@ manageData()
 */
 int
 addRecord(struct question records[MAX_RECORDS],
-		  int count) 
+		  int nCount)
 {
-	str200 questionText;
-	str50 answer, topic, choices[MAX_CHOICES];
-	int recordInd, choiceInd, correctAns, topicInd = -1, questionNum = 1, found = 0;
-	char newLine;
-	
-	//Asks first for question and answer
-	printf("Enter question: ");
-	scanf("%c", &newLine);
-	fgets(questionText, MAX_QTEXT, stdin);
-	printf("Enter answer: ");
-	fgets(answer, MAX_TOPIC_LEN, stdin);
-	
-	//Checks if the question and answer is found in records
-	for(recordInd = 0; recordInd < count && !found; recordInd++)
-	{
-		if(strcmp(records[recordInd].questionText, questionText) == 0 && strcmp(records[recordInd].choices[records[recordInd].correctAns - 1], answer) == 0)
-		{
-			found = 1;
-			
-			printf("Record already exists. It is found below:\n");
-			printf("Question: %s\n", records[recordInd].questionText);
-			printf("Answer: %s\n", records[recordInd].choices[records[recordInd].correctAns - 1]);
-			printf("Topic: %s\n", records[recordInd].topic);
-			printf("Choices:\n");
-			
-			for(choiceInd = 0; choiceInd < MAX_CHOICES; choiceInd++)
-				printf("(%d) %s\n", choiceInd + 1, records[recordInd].choices[choiceInd]);
-		}
-	}
-	
-	//Asks for the rest of the details (topic, choices, and correct answer) then adds them as a record
-	if(!found)
-	{
-		printf("Enter topic: ");
-		fgets(topic, MAX_TOPIC_LEN, stdin);
-		
-		printf("Enter choice 1: ");
-		fgets(choices[0], MAX_TOPIC_LEN, stdin);
-		printf("Enter choice 2: ");
-		fgets(choices[1], MAX_TOPIC_LEN, stdin);
-		printf("Enter choice 3: ");
-		fgets(choices[2], MAX_TOPIC_LEN, stdin);
-		
-		printf("Enter correct answer (1 - 3): ");
-		scanf("%d", &correctAns);
-		scanf("%c", &newLine);
-		
-		if(strcmp(records[recordInd].topic, topic) == 0) 
-		{
-            if(records[recordInd].number >= questionNum)
-            {
-                questionNum = records[recordInd].number + 1;
-                topicInd = recordInd;
-            }
+    /*Declares and initializes the necessary variables*/
+    str50 topic, answer, choices[MAX_CHOICES];
+    str200 questionText;
+    int nCorrAns, nLastQNum, nRecordInd, nQNum, i;
+    char cNewLine;
+
+    /*Gets the question and answer from the user*/
+
+    printf("\nEnter question: ");
+    scanf("%c", &cNewLine);
+    fgets(questionText, MAX_STR_LEN, stdin);
+    removeNewLine(questionText);
+    printf("Enter answer: ");
+    fgets(answer, MAX_STR_LEN, stdin);
+    removeNewLine(answer);
+
+    /*Checks if the question-answer pair already exists*/
+    nRecordInd = findRecord(records, nCount, questionText, answer);
+
+    if(nRecordInd >= 0)
+    {
+        printf("\nRecord already listed:\n");
+        printf("Topic: %s\n", records[nRecordInd].sTopic);
+        printf("Question: %s\n", records[nRecordInd].sQText);
+        printf("Choices:\n");
+        
+        for (i = 0; i < MAX_CHOICES; i++)
+        {
+            printf("  %d. %s\n", i+1, records[nRecordInd].sChoices[i]);
         }
         
-        if (topicInd == -1)
-            questionNum = 1;
+        printf("Correct Answer: %d\n\n", records[nRecordInd].nCorrAns);
+    }
+    else
+    {
+        /*Gets the topic, choices, and correct answer from the user*/
+        printf("Enter topic: ");
+        fgets(topic, MAX_STR_LEN, stdin);
+        removeNewLine(topic);
+        printf("Enter choice 1: ");
+        fgets(choices[0], MAX_STR_LEN, stdin);
+        removeNewLine(choices[0]);
+        printf("Enter choice 2: ");
+        fgets(choices[1], MAX_STR_LEN, stdin);
+        removeNewLine(choices[1]);
+        printf("Enter choice 3: ");
+        fgets(choices[2], MAX_STR_LEN, stdin);
+        removeNewLine(choices[2]);
+        printf("Enter the correct choice number (1-3): ");
+        scanf("%d", &nCorrAns);
 
-        //Stores the information in the record and increment the number of records
-        records[count].number = questionNum;
-        strcpy(records[count].topic, topic);
-        strcpy(records[count].questionText, questionText);
-        strcpy(records[count].choices[0], choices[0]);
-        strcpy(records[count].choices[1], choices[1]);
-        strcpy(records[count].choices[2], choices[2]);
-        records[count].correctAns = correctAns;
-        count++;
+        /*Gets the last question number of the given topic*/
+        nLastQNum = getLastQNum(records, nCount, topic);
 
-        printf("Record added successfully.\n");
+        /*Assigns the next question number*/
+        nQNum = nLastQNum + 1;
+
+        /*Adds the new record to the array*/
+        strcpy(records[nCount].sTopic, topic);
+        strcpy(records[nCount].sQText, questionText);
+        strcpy(records[nCount].sChoices[0], choices[0]);
+        strcpy(records[nCount].sChoices[1], choices[1]);
+        strcpy(records[nCount].sChoices[2], choices[2]);
+        records[nCount].nCorrAns = nCorrAns;
+        records[nCount].nQNum = nQNum;
+
+        /*Increments the record count*/
+        nCount++;
+
+        printf("\nRecord added successfully!\n\n");
     }
     
-    printf("\n");
-		
-	return count;
+    return nCount;
 }
 
-/* This function edits a question record in the structure of questions
-   in the program
+/* This function removes the newline character from a given string, if it exists.
+   The newline character is replaced with a null character ('\0').
+   @param str - the string to remove the newline character from
+*/
+void
+removeNewLine(char* pStr)
+{
+    char* p = pStr;
+    
+    while (*p != '\0')
+	{
+        if (*p == '\n')
+		{
+            *p = '\0';
+        }
+        p++;
+    }
+}
+
+/* This function displays the unique topics of the questions in the records array.
+   It checks if a topic is unique before displaying it.
+   @param question records[MAX_RECORDS] - question records
+   @param nCount - the number of records in the records array
+*/
+void displayTopics(struct question records[MAX_RECORDS], int nCount)
+{
+    int nRecordInd, nTopicInd, nIsUnique;
+    int nUniqueCount = 0;
+    char uniqueTopics[MAX_TOPICS][MAX_STR_LEN], temp[MAX_STR_LEN];
+
+    /* Copies all topics to the uniqueTopics array */
+    for (nRecordInd = 0; nRecordInd < nCount; nRecordInd++)
+    {
+        nIsUnique = 1;
+        for (nTopicInd = 0; nTopicInd < nUniqueCount; nTopicInd++)
+        {
+            if (strcmp(records[nRecordInd].sTopic, uniqueTopics[nTopicInd]) == 0)
+            {
+                nIsUnique = 0;
+            }
+        }
+
+        if (nIsUnique)
+        {
+            strcpy(uniqueTopics[nUniqueCount], records[nRecordInd].sTopic);
+            nUniqueCount++;
+        }
+    }
+
+    /* Sorts the uniqueTopics array in alphabetical order */
+    for (nTopicInd = 0; nTopicInd < nUniqueCount - 1; nTopicInd++)
+    {
+        for (int nTopicInd2 = nTopicInd + 1; nTopicInd2 < nUniqueCount; nTopicInd2++)
+        {
+            if (strcmp(uniqueTopics[nTopicInd], uniqueTopics[nTopicInd2]) > 0)
+            {
+                strcpy(temp, uniqueTopics[nTopicInd]);
+                strcpy(uniqueTopics[nTopicInd], uniqueTopics[nTopicInd2]);
+                strcpy(uniqueTopics[nTopicInd2], temp);
+            }
+        }
+    }
+
+    /* Display the sorted topics */
+    for (nTopicInd = 0; nTopicInd < nUniqueCount; nTopicInd++)
+    {
+        printf("%d. %s\n", nTopicInd + 1, uniqueTopics[nTopicInd]);
+    }
+
+    if (nUniqueCount == 0)
+    {
+        printf("No topics found\n");
+    }
+
+    printf("\n");
+}
+
+
+
+/* This function displays all the questions in the question bank
+   under the specified topic
+   @param question records[MAX_RECORDS] - question records
+   @param nCount - the number of question records in the array
+   @param *topic - address of the topic to display questions for
+*/
+void
+displayQuestions(struct question records[MAX_RECORDS],
+                 int nCount,
+                 char* sTopic,
+                 int qstIndices[MAX_RECORDS],
+                 int *nQstNum)
+{
+    int i;
+    *nQstNum = 0;
+
+    printf("Questions in topic %s:\n", sTopic);
+
+    for(i = 0; i < nCount; i++)
+    {
+        if(strcmp(records[i].sTopic, sTopic) == 0)
+        {
+            qstIndices[*nQstNum] = i;
+            (*nQstNum)++;
+            printf("%d. %s\n", *nQstNum, records[i].sQText);
+        }
+    }
+
+    if(*nQstNum == 0)
+    {
+        printf("No questions found in topic %s.\n", sTopic);
+    }
+
+    printf("\n");
+}
+
+/* This function displays details of a question record.
+   @param record - the question record to display
+*/
+void
+displayQuestion(struct question record)
+{
+	int i;
+
+    printf("Question:\n%s\n", record.sQText);
+    printf("Choices:\n");
+    
+    for(i = 0; i < MAX_CHOICES; i++)
+	{
+        printf("%d) %s\n", i + 1, record.sChoices[i]);
+    }
+    
+    printf("Answer: %d\n\n", record.nCorrAns);
+}
+
+/* This function validates if a given answer is one of the valid choices for a given question.
+   @param record - the question record to validate the answer for
+   @param newAnswer - the new answer to validate
+   @return 1 if the answer is valid, 0 otherwise
+*/
+int
+validateAnswer(struct question record,
+               char sNewAns[MAX_STR_LEN])
+{
+    int i;
+    int nIndex = -1;
+    
+    /*Iterate over the question choices and check if the new answer is valid*/
+    for (i = 0; i < MAX_CHOICES; i++)
+    {
+        if (strcmp(record.sChoices[i], sNewAns) == 0)
+        {
+            /*The answer is valid*/
+            nIndex = i;
+        }
+    }
+    
+    /*Returns the index of the found choice (or -1 if not found)*/
+    return nIndex;
+}
+
+/* This function edits the chosen question record of a chosen topic
    @param question records[MAX_RECORDS] - question records
    @param count - number of records
 */
 void
 editRecord(struct question records[MAX_RECORDS],
-		   int count)
+           int nCount)
 {
-    char uniqueTopics[MAX_TOPICS][MAX_TOPIC_LEN];
-	int nUnique = 0, topicInd, currInd, topicChoice, questionChoice, found;
+    int nTopicInd, nQstInd, nFieldInd, nChoiceInd, nNewChoiceInd, nFoundInd, nQstNum;
+    int nQstIndices[MAX_RECORDS];
+    char sTopic[MAX_STR_LEN], sNewAns[MAX_STR_LEN], sTemp[MAX_STR_LEN];
+    char cChoice;
+    struct question recordTemp;
 
-	//Loops through all questions and add unique topics to the list
-	for (topicInd = 0; topicInd < count; topicInd++)
-	{
-    	char* current = records[topicInd].topic;
-    	//Resets found flag for next iteration
-    	found = 0;
+    /*Displays available topics and ask for the topic index to edit*/
+    displayTopics(records, nCount);
+    printf("Enter topic index: ");
+    scanf("%d", &nTopicInd);
 
-    	//Checks if current is already in uniqueTopics
-    	for(currInd = 0; currInd < nUnique; currInd++) 
-        	if (strcmp(current, uniqueTopics[currInd]) == 0) 
-                //Topic already in list, so don't add it again
-            	found = 1;
+    /*Consumes newline character*/
+    getchar();
 
-    	//If not found, add it to the list
-    	if(!found)
-    	{
-        	strcpy(uniqueTopics[nUnique], current);
-        	nUnique++;
-    	}
-	}
+    /*Gets the selected topic and remove newline character*/
+    strcpy(sTopic, records[nTopicInd - 1].sTopic);
+    removeNewLine(sTopic);
 
-	//Displays the unique topics
-	printf("Available topics:\n");
-	
-	for (topicInd = 0; topicInd < nUnique; topicInd++)
-    	printf("(%d) %s\n", topicInd + 1, uniqueTopics[topicInd]);
+    /*Displays questions under the selected topic and ask for the question index to edit*/
+    displayQuestions(records, nCount, sTopic, nQstIndices, &nQstNum);
+    printf("Enter question index: ");
+    scanf("%d", &nQstInd);
 
-	//Lets the admin choose a topic
-	printf("Enter the number of the topic you want to edit: ");
-	scanf("%d", &topicChoice);
-	
-	printf("Questions in topic \"%s\":\n", uniqueTopics[topicChoice - 1]);
-	
-	for (int i = 0; i < count; i++)
-    	if (strcmp(records[i].topic, uniqueTopics[topicChoice - 1]) == 0)
-        	printf("%d. %s\n", records[i].number, records[i].questionText);
+    /*Consumes newline character*/
+    getchar();
 
-	//Lets the admin choose a question to edit
-	printf("Enter the number of the question you want to edit: ");
-	scanf("%d", &questionChoice);
+    /*Displays the selected question and ask for the field to modify*/
+    recordTemp = records[nQstInd - 1];
+    displayQuestion(recordTemp);
+    printf("Enter field to modify:\n");
+    printf("1 - Topic\n2 - Question\n3 - Choices\n4 - Answer\n");
+    scanf("%d", &nFieldInd);
 
+    /*Consumes newline character*/
+    getchar();
 
+    /*Edits the selected field*/
+    switch(nFieldInd)
+    {
+        //FIX QUESTION ARRANGEMENT LATER
+        /*Edits topic*/
+        case 1:
+            printf("Enter new topic: ");
+            fgets(sTopic, MAX_STR_LEN, stdin);
+            removeNewLine(sTopic);
+            strcpy(recordTemp.sTopic, sTopic);
+            break;
+
+        // Edits question
+        case 2:
+            printf("Enter new question: ");
+            fgets(sTemp, MAX_STR_LEN, stdin);
+            removeNewLine(sTemp);
+            strcpy(recordTemp.sQText, sTemp);
+            break;
+
+        /*Edits choices*/
+        case 3:
+            printf("Enter choice index to modify: ");
+            scanf("%d", &nChoiceInd);
+            getchar(); // consume newline character
+            printf("Enter new choice: ");
+            fgets(sTemp, MAX_STR_LEN, stdin);
+            removeNewLine(sTemp);
+            strcpy(recordTemp.sChoices[nChoiceInd - 1], sTemp);
+            break;
+
+        /*Edits answer*/
+        case 4:
+            printf("Enter new answer: ");
+            fgets(sNewAns, MAX_STR_LEN, stdin);
+            removeNewLine(sNewAns);
+            nFoundInd = validateAnswer(recordTemp, sNewAns);
+
+            if (nFoundInd != -1)
+            {
+                recordTemp.nCorrAns = nFoundInd + 1;
+            }
+            else
+            {
+                printf("Invalid answer\n");
+            }
+            break;
+
+        /*Invalid input*/
+        default:
+            printf("Invalid choice\n");
+            break;
+    }
+
+    /*Updates the question record in the array*/
+    records[nQstInd - 1] = recordTemp;
+
+    /*Displays updated topics and questions and success message*/
+    displayTopics(records, nCount);
+    displayQuestions(records, nCount, sTopic, nQstIndices, &nQstNum);
+    displayQuestion(recordTemp);
+    printf("Record edited successfully\n\n");
 }
-
 
 void 
 deleteRecord()

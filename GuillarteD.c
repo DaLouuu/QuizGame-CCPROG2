@@ -2,8 +2,8 @@
 Description: The program is a general knowledge quiz game that offers a venue
 			 for people to test their general knowledge.
 Programmed by: Dana Louise A. Guillarte S23A
-Last modified: March 31, 2023
-Version: 7
+Last modified: April 4, 2023
+Version: 8
 Acknowledgements:  
 */
 
@@ -23,33 +23,32 @@ main()
 	//Sets password for manage data
 	str20 adminPass = "admin123";
 	//Choice to start program
-	int progChoice = 100; 
+	int nMenuChoice = 100; 
     
     do
     {
         //Ensures that the title screen won't keep popping up after invalid input
-        if(progChoice == 100)
-            titleScreen();
+        if(nMenuChoice == 100)
+            displayMenu();
         
         //Gets main choice from user input
-        progChoice = promptChoice(1, 3);
+        nMenuChoice = promptChoice(1, 3);
             
         //Determines the mode depending on the choice made by the user
-        switch(progChoice)
+        switch(nMenuChoice)
         {
             case 1:
                 printf("\nYou have selected play mode\n\n");
-                progChoice = 100;
+                nMenuChoice = 100;
                 break;
             case 2:
                 printf("\nYou have selected manage data mode\n\n");
                 login(adminPass);
-                //manageData();
-                progChoice = 100;
+                nMenuChoice = 100;
                 break;
             case 3:
                 printf("\nSee you next time!");
                 break;
         }
-    } while(progChoice != 3);
+    } while(nMenuChoice != 3);
 }
