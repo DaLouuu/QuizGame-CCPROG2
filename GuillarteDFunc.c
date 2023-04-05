@@ -102,8 +102,8 @@ promptChoice(int nMin,
 /* This function accepts the password entered by the user and checks if correct
    @param sAdminPass - array containing the admin password for checking
 */
-void
-login(str20 sAdminPass)
+int
+login(str20 sAdminPass, int nRecords)
 {
     char cInput;
     char sPassword[MAX_PASS_LEN + 1];
@@ -178,7 +178,7 @@ login(str20 sAdminPass)
         printf("Login successful!\n\n");
         
         /* Displays user-friendly interface for managing data */
-        manageData();
+        nRecords = manageData(nRecords);
     } 
     else
     {
@@ -187,19 +187,18 @@ login(str20 sAdminPass)
         /* Goes back to main menu */
         displayMenu();
     }
+
+    return nRecords;
 }
 
 
 /* This function displays the user friendly Manage Data UI and manages
    the question records of the game
 */
-void
-manageData()
+int
+manageData(int nRecords)
 {
     int nChoice;
-    
-    /* Initial number of records to be modified */
-    int nRecords = 0;
     
     /* Array of question records */
     struct question arrRecords[MAX_RECORDS];
@@ -247,11 +246,28 @@ manageData()
             /* Imports data from a file */
             case 4:
                 printf("Import Data selected.\n\n");
+
+                /* Calls the importData function to import records from a file */
+                nRecords = importData(arrRecords, MAX_RECORDS);
                 break;
                 
             /* Exports data to a file */
             case 5:
                 printf("Export Data selected.\n\n");
+                
+                if (nRecords == 0)
+                {
+                    /* Tells the user that export can't be done if there are no
+                       records */
+                    printf("\nI'm sorry, but we cannot export any data");
+                    printf(" if there are no records. Try again later.\n\n\n");
+                }
+                else
+                {
+
+                    /* Calls the exportData function to export records to a file */
+                    nRecords = exportData(arrRecords, nRecords);
+                }
                 break;
                 
             /* Goes back to the main menu */
@@ -264,6 +280,8 @@ manageData()
                 printf("Invalid choice. Try again.\n\n");
         }
     } while (nChoice != 6);
+
+    return nRecords;
 }
 
 /* This function finds a record with the given question text and answer
@@ -354,6 +372,7 @@ addRecord(struct question records[MAX_RECORDS],
     /* Gets the question and answer from the user */
     printf("\nEnter question: ");
     scanf("%c", &cNewLine);
+    getchar();
     fgets(sQText, MAX_STR_LEN, stdin);
     removeNewLine(sQText);
     printf("Enter answer: ");
@@ -780,12 +799,13 @@ deleteRecord(struct question records[MAX_RECORDS],
     return nCount;
 }
 
+//TO BE CHECKED AGAIN
 /* This function checks if a file exists in the current directory
    @param sFilename - the name of the file to check
    @return 1 if the file exists, 0 otherwise
 */
 int
-checkFileExists(str50 sFileName)
+checkFileExists(str30 sFileName)
 {
     /* Declares a file pointer and a variable to store the file existence status */
     FILE *fptr;
@@ -810,6 +830,7 @@ checkFileExists(str50 sFileName)
     return nFileExists;
 }
 
+//TO BE CHECKED AGAIN
 /* This function reads questions from a file and stores them in a struct array.
    @param sFileName - the name of the file to read questions from
    @param records[MAX_RECORDS] - an array of structs to store the questions in
@@ -817,7 +838,7 @@ checkFileExists(str50 sFileName)
    @return the number of questions read from the file, or -1 if an error occurs
 */
 int
-readData(str50 sFileName,
+readData(str30 sFileName,
          struct question records[MAX_RECORDS],
          int nMaxQst)
 {
@@ -889,13 +910,14 @@ readData(str50 sFileName,
     return nResult;
 }
 
+//TO BE CHECKED AGAIN
 /* This function writes the question records to a file in the specified format.
    @param sFileName - the name of the file to read questions from
    @param records[MAX_RECORDS] - an array of structs to store the questions in
    @param nQCount - the number of question records to write
 */
 void
-writeData(str50 sFileName,
+writeData(str30 sFileName,
           struct question records[MAX_RECORDS],
           int nQCount)
 {
@@ -908,39 +930,119 @@ writeData(str50 sFileName,
     {
         printf("Failed to open file.\n");
     }
-
-    /* Writes question records to file in specified format */
-    for (nRecordInd = 0; nRecordInd < nQCount; nRecordInd++)
+    else
     {
-        fprintf(fptr, "%s\n%d\n%s\n", records[nRecordInd].sTopic,
-                                      records[nRecordInd].nQNum,
-                                      records[nRecordInd].sQText);
-
-        /* Writes answer choices to file */
-        for (nChoiceInd = 0; nChoiceInd < MAX_CHOICES; nChoiceInd++)
+        /* Writes question records to file in specified format */
+        for (nRecordInd = 0; nRecordInd < nQCount; nRecordInd++)
         {
-            fprintf(fptr, "%s\n", records[nChoiceInd].sChoices[nChoiceInd]);
+            fprintf(fptr, "%s\n%d\n%s\n", records[nRecordInd].sTopic,
+                                          records[nRecordInd].nQNum,
+                                          records[nRecordInd].sQText);
+
+            /* Writes answer choices to file */
+            for (nChoiceInd = 0; nChoiceInd < MAX_CHOICES; nChoiceInd++)
+            {
+                fprintf(fptr, "%s\n", records[nChoiceInd].sChoices[nChoiceInd]);
+            }
+
+            fprintf(fptr, "%d\n\n", records[nRecordInd].nCorrAns);
         }
 
-        fprintf(fptr, "%d\n\n", records[nRecordInd].nCorrAns);
+        /* Closes file */
+        fclose(fptr);
+    }
+}
+
+//TO BE CHECKED AGAIN
+/* This function imports question records from a file given the filename
+   @param records[MAX_RECORDS] - an array of structs to store the questions in
+   @param nMaxQst - the maximum number of questions to read from the file
+   @return the number of questions imported from the file, or -1 if an error occurs
+*/
+int
+importData(struct question records[MAX_RECORDS],
+           int nMaxQst) 
+{
+    str30 sFileName;
+    int nQCount;
+
+    /* Removes new line entered */
+    getchar();
+
+    /* Prompts the user to enter the filename */
+    printf("\nEnter filename: ");
+    fgets(sFileName, sizeof(sFileName), stdin);
+
+    /*Removes the newline character from the filename*/
+    removeNewLine(sFileName);
+
+    /* Reads the questions from the file and stores them in the records array
+       using the readData function */
+    nQCount = readData(sFileName, records, nMaxQst);
+
+    /* Checks if the readData function failed to open the file */
+    if (nQCount == -1)
+    {
+
+        /* Prints an error message if the file could not be opened */
+        printf("Failed to open file.\n\n");
+    }
+    else
+    {
+
+        /* Prints a success message if the data was imported successfully */
+        printf("Data successfully imported from %s.\n\n", sFileName);
     }
 
-    /* Closes file */
-    fclose(fptr);
+    /* Returns the number of questions imported */
+    return nQCount;
 }
 
-
-void
-importData()
+//TO BE CHECKED AGAIN
+/* This function exports the question records to a text file
+   with the specified filename. The data in this exported file
+   can be used in the import option.
+   @param records[MAX_RECORDS] - an array of structs to be exported
+   @param nQCount - the number of question records in the array
+   @return the number of question records exported
+*/
+int
+exportData(struct question records[MAX_RECORDS],
+           int nQCount)
 {
-	FILE *fptr;
-	
-	
-	
-}
+    str30 sFileName;
+    int nIndex;
+    FILE* fptr;
 
-void
-exportData()
-{
-	
+    /* Removes new line entered */
+    getchar();
+
+    /* Prompts the user to enter the filename */
+    printf("\nEnter filename: ");
+    fgets(sFileName, sizeof(sFileName), stdin);
+
+    /* Removes the newline character from the filename */
+    removeNewLine(sFileName);
+
+    /* Opens the file */
+    fptr = fopen(sFileName, "w");
+    if (fptr == NULL)
+    {
+        printf("Failed to open file.\n\n");
+    }
+    else 
+    {
+
+        /* Writes question records to file using writeData function */
+        writeData(sFileName, records, nQCount);
+
+        /* Closes the file */
+        fclose(fptr);
+
+        /* Prints a success message if the data was exported successfully */
+        printf("Data successfully exported to %s.\n\n", sFileName);
+    }
+
+    /* Returns the number of questions imported */
+    return nQCount;
 }

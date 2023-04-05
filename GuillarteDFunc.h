@@ -7,12 +7,14 @@
 #include <conio.h>
 
 #define MAX_PASS_LEN 21
+#define MAX_FILE_LEN 31
 #define MAX_STR_LEN 51
 #define MAX_QTEXT_LEN 201
 #define MAX_RECORDS 1000
 #define MAX_CHOICES 3
 #define MAX_TOPICS 5
 
+typedef char str30 [MAX_FILE_LEN];
 typedef char str50 [MAX_STR_LEN];
 typedef char str200 [MAX_QTEXT_LEN];
 typedef char str20 [MAX_PASS_LEN];
@@ -34,11 +36,11 @@ int
 promptChoice(int nMin,
 			 int nMax);
 			 
-void
-login(str20 sAdminPass);
+int
+login(str20 sAdminPass, int nRecords);
 
-void
-manageData();
+int
+manageData(int nRecords);
 
 int
 findRecord(struct question records[MAX_RECORDS],
@@ -84,15 +86,23 @@ deleteRecord(struct question records[MAX_RECORDS],
              int nCount);
 
 int
-checkFileExists(str50 sFileName);
+checkFileExists(str30 sFileName);
 
 int
-readData(str50 sFileName,
+readData(str30 sFileName,
          struct question records[MAX_RECORDS],
          int nMaxQst);
 
 void
-writeData(str50 sFileName,
+writeData(str30 sFileName,
           struct question records[MAX_RECORDS],
           int nQCount);
+
+int
+importData(struct question records[MAX_RECORDS],
+           int nMaxQst);
+
+int
+exportData(struct question records[MAX_RECORDS],
+           int nQCount);
 #endif
