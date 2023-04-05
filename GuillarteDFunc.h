@@ -6,9 +6,9 @@
 #include <string.h>
 #include <conio.h>
 
-#define MAX_PASS_LEN 20
-#define MAX_STR_LEN 50
-#define MAX_QTEXT_LEN 200
+#define MAX_PASS_LEN 21
+#define MAX_STR_LEN 51
+#define MAX_QTEXT_LEN 201
 #define MAX_RECORDS 1000
 #define MAX_CHOICES 3
 #define MAX_TOPICS 5
@@ -83,4 +83,16 @@ int
 deleteRecord(struct question records[MAX_RECORDS],
              int nCount);
 
+int
+checkFileExists(str50 sFileName);
+
+int
+readData(str50 sFileName,
+         struct question records[MAX_RECORDS],
+         int nMaxQst);
+
+void
+writeData(str50 sFileName,
+          struct question records[MAX_RECORDS],
+          int nQCount);
 #endif

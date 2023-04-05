@@ -780,6 +780,155 @@ deleteRecord(struct question records[MAX_RECORDS],
     return nCount;
 }
 
+/* This function checks if a file exists in the current directory
+   @param sFilename - the name of the file to check
+   @return 1 if the file exists, 0 otherwise
+*/
+int
+checkFileExists(str50 sFileName)
+{
+    /* Declares a file pointer and a variable to store the file existence status */
+    FILE *fptr;
+    int nFileExists;
+
+    /* Attempts to open the file for reading */
+    fptr = fopen(sFileName, "r");
+
+    /* If the file doesn't exist, set the status variable to 0 */
+    if (fptr == NULL)
+    {
+        nFileExists = 0;
+    }
+    /* If the file does exist, close the file and set the status variable to 1 */
+    else
+    {
+        fclose(fptr);
+        nFileExists = 1;
+    }
+
+    /* Returns the file existence status */
+    return nFileExists;
+}
+
+/* This function reads questions from a file and stores them in a struct array.
+   @param sFileName - the name of the file to read questions from
+   @param records[MAX_RECORDS] - an array of structs to store the questions in
+   @param nMaxQst - the maximum number of questions to read from the file
+   @return the number of questions read from the file, or -1 if an error occurs
+*/
+int
+readData(str50 sFileName,
+         struct question records[MAX_RECORDS],
+         int nMaxQst)
+{
+    FILE *fptr;
+    str50 sTopic, sChoices;
+    str200 sQText;
+    int nQNum, nCorrAns;
+    int nQCount = 0;
+    int nResult = 0;
+    int nChoiceInd = 0;
+
+    /* Checks if file exists */
+    if (!checkFileExists(sFileName))
+    {
+        printf("Error: File not found\n");
+    }
+
+    /* Opens the file for reading */
+    fptr = fopen(sFileName, "r");
+    if (fptr == NULL)
+    {
+        printf("Error: Could not open file\n");
+    }
+
+    /* Reads questions from file */
+    while (nQCount < nMaxQst && fscanf(fptr, "%49s %d\n", sTopic, &nQNum) == 2)
+    {
+        /* Reads question text */
+        if (fgets(sQText, sizeof(sQText), fptr) == NULL)
+        {
+            printf("Error: Invalid file format\n");
+        }
+        removeNewLine(sQText);
+
+        /* Read choices */
+        nChoiceInd = 0;
+        while (nChoiceInd < MAX_CHOICES &&
+               fgets(sChoices, sizeof(sChoices), fptr) != NULL)
+        {
+            removeNewLine(sChoices);
+            strcpy(records[nQCount].sChoices[nChoiceInd], sChoices);
+            nChoiceInd++;
+        }
+        if (nChoiceInd != MAX_CHOICES)
+        {
+            printf("Error: Invalid file format\n");
+        }
+
+        /* Reads correct answer */
+        if (fscanf(fptr, " %d\n", &nCorrAns) != 1)
+        {
+            printf("Error: Invalid file format\n");
+        }
+
+        /* Copies data into struct */
+        strcpy(records[nQCount].sTopic, sTopic);
+        records[nQCount].nQNum = nQNum;
+        strcpy(records[nQCount].sQText, sQText);
+        records[nQCount].nCorrAns = nCorrAns;
+
+        nQCount++;
+    }
+
+    /* Closes the file */
+    fclose(fptr);
+
+    /* Sets the number of questions read */
+    nResult = nQCount;
+    return nResult;
+}
+
+/* This function writes the question records to a file in the specified format.
+   @param sFileName - the name of the file to read questions from
+   @param records[MAX_RECORDS] - an array of structs to store the questions in
+   @param nQCount - the number of question records to write
+*/
+void
+writeData(str50 sFileName,
+          struct question records[MAX_RECORDS],
+          int nQCount)
+{
+    FILE *fptr;
+    int nRecordInd, nChoiceInd;
+
+    /* Opens file for writing */
+    fptr = fopen(sFileName, "w");
+    if (fptr == NULL)
+    {
+        printf("Failed to open file.\n");
+    }
+
+    /* Writes question records to file in specified format */
+    for (nRecordInd = 0; nRecordInd < nQCount; nRecordInd++)
+    {
+        fprintf(fptr, "%s\n%d\n%s\n", records[nRecordInd].sTopic,
+                                      records[nRecordInd].nQNum,
+                                      records[nRecordInd].sQText);
+
+        /* Writes answer choices to file */
+        for (nChoiceInd = 0; nChoiceInd < MAX_CHOICES; nChoiceInd++)
+        {
+            fprintf(fptr, "%s\n", records[nChoiceInd].sChoices[nChoiceInd]);
+        }
+
+        fprintf(fptr, "%d\n\n", records[nRecordInd].nCorrAns);
+    }
+
+    /* Closes file */
+    fclose(fptr);
+}
+
 
 void
 importData()
