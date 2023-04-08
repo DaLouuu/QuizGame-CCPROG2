@@ -101,9 +101,12 @@ promptChoice(int nMin,
 
 /* This function accepts the password entered by the user and checks if correct
    @param sAdminPass - array containing the admin password for checking
+   @param nRecords - total amount of records
+   @return the total amount of records
 */
 int
-login(str20 sAdminPass, int nRecords)
+login(str20 sAdminPass,
+      int nRecords)
 {
     char cInput;
     char sPassword[MAX_PASS_LEN + 1];
@@ -194,6 +197,8 @@ login(str20 sAdminPass, int nRecords)
 
 /* This function displays the user friendly Manage Data UI and manages
    the question records of the game
+   @param nRecords - total amount of records
+   @return the total amount of records
 */
 int
 manageData(int nRecords)
@@ -372,7 +377,6 @@ addRecord(struct question records[MAX_RECORDS],
     /* Gets the question and answer from the user */
     printf("\nEnter question: ");
     scanf("%c", &cNewLine);
-    getchar();
     fgets(sQText, MAX_STR_LEN, stdin);
     removeNewLine(sQText);
     printf("Enter answer: ");
@@ -470,50 +474,37 @@ void
 displayTopics(struct question records[MAX_RECORDS],
               int nCount)
 {
-    int nRecordInd, nTopicInd, nIsUnique;
-    int nUniqueCount = 0;
-    char arrUniqueTopics[MAX_TOPICS][MAX_STR_LEN], arrTemp[MAX_STR_LEN];
+    int nIndex, nTopicInd, nFound;
+    str50 arrTopics[MAX_RECORDS];
 
-    /* Copies all topics to the uniqueTopics array */
-    for (nRecordInd = 0; nRecordInd < nCount; nRecordInd++)
+    /* Prints the topics of the questions in the question bank */
+    printf("Topics:\n");
+    for (nIndex = 0, nTopicInd = 0; nIndex < nCount; nIndex++)
     {
-        nIsUnique = 1;
-        for (nTopicInd = 0; nTopicInd < nUniqueCount; nTopicInd++)
+        nFound = 0;
+
+        /* Checks if the topic of the current record is already in the array of topics */
+        for (int i = 0; i < nTopicInd; i++)
         {
-            if (strcmp(records[nRecordInd].sTopic, arrUniqueTopics[nTopicInd]) == 0)
+            /* If the topic is already in the array, set nFound to 1 */
+            if (strcmp(records[nIndex].sTopic, arrTopics[i]) == 0)
             {
-                nIsUnique = 0;
+                nFound = 1;
+                break;
             }
         }
 
-        if (nIsUnique)
+        /* If the topic is not in the array, print it and add it to the array */
+        if (nFound == 0)
         {
-            strcpy(arrUniqueTopics[nUniqueCount], records[nRecordInd].sTopic);
-            nUniqueCount++;
+            nTopicInd++;
+            printf("%d. %s\n", nTopicInd, records[nIndex].sTopic);
+            strcpy(arrTopics[nTopicInd-1], records[nIndex].sTopic);
         }
     }
 
-    /* Sorts the uniqueTopics array in alphabetical order */
-    for (nTopicInd = 0; nTopicInd < nUniqueCount - 1; nTopicInd++)
-    {
-        for (int nTopicInd2 = nTopicInd + 1; nTopicInd2 < nUniqueCount; nTopicInd2++)
-        {
-            if (strcmp(arrUniqueTopics[nTopicInd], arrUniqueTopics[nTopicInd2]) > 0)
-            {
-                strcpy(arrTemp, arrUniqueTopics[nTopicInd]);
-                strcpy(arrUniqueTopics[nTopicInd], arrUniqueTopics[nTopicInd2]);
-                strcpy(arrUniqueTopics[nTopicInd2], arrTemp);
-            }
-        }
-    }
-
-    /* Display the sorted topics */
-    for (nTopicInd = 0; nTopicInd < nUniqueCount; nTopicInd++)
-    {
-        printf("%d. %s\n", nTopicInd + 1, arrUniqueTopics[nTopicInd]);
-    }
-
-    if (nUniqueCount == 0)
+    /* Print a message if no topics were found */
+    if (nTopicInd == 0)
     {
         printf("No topics found\n");
     }
@@ -534,42 +525,44 @@ displayTopics(struct question records[MAX_RECORDS],
 void
 displayQuestions(struct question records[MAX_RECORDS],
                  int nCount,
-                 char* pTopic,
+                 str50 sTopic,
                  int arrQstIndices[MAX_RECORDS],
                  int* pQstNum)
 {
-    int nIndex;
+    /* Declares and initializes the necessary variables */
+    int nIndex, nQstInd = 0;
+    int nFound = 0;
 
-    /* Initializes the number of questions found to 0 */
-    *pQstNum = 0;
-
-    /* Displays the topic for which questions are being displayed */
-    printf("Questions in topic %s:\n", pTopic);
-
-    /* Loops through all questions in the question bank */
+    /* Iterates through each record in the records array */
     for (nIndex = 0; nIndex < nCount; nIndex++)
     {
-
-        /* If the current question matches the specified topic,
-           store its index and display its text */
-        if (strcmp(records[nIndex].sTopic, pTopic) == 0)
+        /* Checks if the topic of the current record matches the specified topic */
+        if (strcmp(records[nIndex].sTopic, sTopic) == 0)
         {
-            arrQstIndices[*pQstNum] = nIndex;
-            (*pQstNum)++;
-            printf("%d. %s\n", *pQstNum, records[nIndex].sQText);
+            /* If the topic matches, add the index of the record to the array of indices */
+            arrQstIndices[nQstInd] = nIndex;
+            nFound = 1;
+            nQstInd++;
         }
     }
 
-    /* If no questions were found for the specified topic,
-       display a message indicating so */
-    if (*pQstNum == 0)
+    /* If the topic is found, display the questions */
+    if (nFound == 1)
     {
-        printf("No questions found in topic %s.\n", pTopic);
+        printf("\nQuestions:\n");
+        for (int i = 0; i < nQstInd; i++)
+        {
+            printf("  %d. %s\n", i + 1, records[arrQstIndices[i]].sQText);
+        }
+        printf("\n");
+        *pQstNum = nQstInd;
     }
-
-    /* Adds a new line for formatting purposes */
-    printf("\n");
+    else
+    {
+        printf("\nNo questions found for topic %s\n\n", sTopic);
+    }
 }
+
 
 /* This function displays details of a question record.
    @param record - the question record to display
@@ -577,19 +570,24 @@ displayQuestions(struct question records[MAX_RECORDS],
 void
 displayQuestion(struct question record)
 {
-	int nIndex;
+    /* Declares and initializes the necessary variables */
+    int nIndex;
 
-    printf("Question:\n%s\n", record.sQText);
-    printf("Choices:\n");
-    
-    /* Loops through all the possible choices and display
-       them with a corresponding index number */
+    /* Displays the question details */
+    printf("\nQuestion Details:\n");
+    printf("  Topic: %s \n", record.sTopic);
+    printf("  Question: %s \n", record.sQText);
+    printf("  Choices: \n");
+
+
     for (nIndex = 0; nIndex < MAX_CHOICES; nIndex++)
-	{
-        printf("%d) %s\n", nIndex + 1, record.sChoices[nIndex]);
+    {
+        printf("    %d. %s \n", nIndex + 1, record.sChoices[nIndex]);
     }
-    
-    printf("Answer: %d\n\n", record.nCorrAns);
+
+    printf("  Correct Answer: %d \n", record.nCorrAns);
+    printf("  Question Number: %d \n", record.nQNum);
+    printf("\n");
 }
 
 /* This function validates if a given answer is one of the valid choices for a given question.
@@ -624,104 +622,96 @@ validateAnswer(struct question record,
 */
 void
 editRecord(struct question records[MAX_RECORDS],
-           int nCount)
+                int nCount)
 {
-    int nTopicInd, nQstInd, nFieldInd, nChoiceInd, nNewChoiceInd, nFoundInd, nQstNum;
+    int nTopicInd, nQstInd, nConfirm, nChoice, nIndex;
     int nQstIndices[MAX_RECORDS];
-    str50 sTopic, sNewAns, sTemp;
-    char cChoice;
-    struct question recordTemp;
-
-    /* Displays available topics and ask for the topic index to edit */
-    displayTopics(records, nCount);
-    printf("Enter topic index: ");
-    scanf("%d", &nTopicInd);
-
-    /* Gets the selected topic and remove newline character */
-    strcpy(sTopic, records[nTopicInd - 1].sTopic);
-    removeNewLine(sTopic);
-
-    /* Displays questions under the selected topic and ask for the question index to edit */
-    displayQuestions(records, nCount, sTopic, nQstIndices, &nQstNum);
-    printf("Enter question index: ");
-    scanf("%d", &nQstInd);
-
-    /* Displays the selected question and ask for the field to modify */
-    recordTemp = records[nQstInd - 1];
-    displayQuestion(recordTemp);
-    printf("Enter field to modify:\n");
-    printf("1 - Topic\n2 - Question\n3 - Choices\n4 - Answer\n");
-    scanf("%d", &nFieldInd);
-
-    /* Consumes newline character */
-    getchar();
-
-    /* Edits the selected field */
-    switch (nFieldInd)
+    str50 sTopic, sNewTopic, sNewQText, sNewChoice, sNewAns;
+    int nNewAns;
+    
+    do
     {
-        //FIX QUESTION ARRANGEMENT LATER
-        /* Edits topic */
-        case 1:
-            printf("Enter new topic: ");
-            fgets(sTopic, MAX_STR_LEN, stdin);
-            removeNewLine(sTopic);
-            strcpy(recordTemp.sTopic, sTopic);
-            break;
+        /* Displays available topics and ask for the topic index to edit */
+        displayTopics(records, nCount);
+        printf("Enter topic index: ");
+        scanf("%d", &nTopicInd);
+        
+        /* Gets the selected topic and remove newline character */
+        strcpy(sTopic, records[nTopicInd - 1].sTopic);
+        removeNewLine(sTopic);
+        
+        /* Displays questions under the selected topic and ask for the question index to edit */
+        displayQuestions(records, nCount, sTopic, nQstIndices, &nQstInd);
+        printf("Enter question index: ");
+        scanf("%d", &nQstInd);
+        
+        /* Displays the question details */
+        displayQuestion(records[nQstIndices[nQstInd - 1]]);
+        
+        /* Asks for the field to edit */
+        printf("What field do you want to edit?\n");
+        printf("  1. Topic\n");
+        printf("  2. Question\n");
+        printf("  3. Choices\n");
+        printf("  4. Answer\n");
+        printf("Enter choice: ");
+        scanf("%d", &nChoice);
+        
+        /* Edits the chosen field */
+        switch (nChoice)
+        {
+            case 1:
+                /* Edits the topic */
+                printf("Enter new topic: ");
+                scanf("%s", sNewTopic);
+                strcpy(records[nQstIndices[nQstInd - 1]].sTopic, sNewTopic);
+                break;
+            case 2:
+                /* Edits the question */
+                printf("Enter new question: ");
+                scanf("%s", sNewQText);
+                strcpy(records[nQstIndices[nQstInd - 1]].sQText, sNewQText);
+                break;
+            case 3:
+                /* Edits a single choice */
+                printf("Enter choice index to edit (1-3): ");
+                scanf("%d", &nIndex);
+                if (nIndex >= 1 && nIndex <= MAX_CHOICES)
+                {
+                    printf("Enter new choice %d: ", nIndex);
+                    scanf("%s", sNewChoice);
+                    strcpy(records[nQstIndices[nQstInd - 1]].sChoices[nIndex - 1], sNewChoice);
+                }
+                else
+                {
+                    printf("Invalid choice index!\n");
+                }
+                break;
+            case 4:
+                /* Edits the answer */
+                printf("Enter new answer: ");
+                scanf("%s", sNewAns);
+                nNewAns = validateAnswer(records[nQstIndices[nQstInd - 1]], sNewAns);
+                if (nNewAns != -1)
+                {
+                    records[nQstIndices[nQstInd - 1]].nCorrAns = nNewAns + 1;
+                }
+                else
+                {
+                    printf("Invalid answer!\n");
+                }
+                break;
+            default:
+                printf("Invalid choice!\n");
+                break;
+        }
 
-        /* Edits question */
-        case 2:
-            printf("Enter new question: ");
-            fgets(sTemp, MAX_STR_LEN, stdin);
-            removeNewLine(sTemp);
-            strcpy(recordTemp.sQText, sTemp);
-            break;
-
-        /* Edits choices */
-        case 3:
-            printf("Enter choice index to modify: ");
-            scanf("%d", &nChoiceInd);
-
-            /*Consumes newline character*/
-            getchar();
-
-            printf("Enter new choice: ");
-            fgets(sTemp, MAX_STR_LEN, stdin);
-            removeNewLine(sTemp);
-            strcpy(recordTemp.sChoices[nChoiceInd - 1], sTemp);
-            break;
-
-        /* Edits answer */
-        case 4:
-            printf("Enter new answer: ");
-            fgets(sNewAns, MAX_STR_LEN, stdin);
-            removeNewLine(sNewAns);
-            nFoundInd = validateAnswer(recordTemp, sNewAns);
-
-            if (nFoundInd != -1)
-            {
-                recordTemp.nCorrAns = nFoundInd + 1;
-            }
-            else
-            {
-                printf("Invalid answer\n");
-            }
-            break;
-
-        /* Invalid input */
-        default:
-            printf("Invalid choice\n");
-            break;
-    }
-
-    /* Updates the question record in the array */
-    records[nQstInd - 1] = recordTemp;
-
-    /* Displays updated topics and questions and success message */
-    displayTopics(records, nCount);
-    displayQuestions(records, nCount, sTopic, nQstIndices, &nQstNum);
-    displayQuestion(recordTemp);
-    printf("Record edited successfully\n\n");
+        /* Asks for confirmation */
+        printf("Do you want to edit another record? (1 - Yes, 0 - No): ");
+        scanf("%d", &nConfirm);
+    } while (nConfirm == 1);
 }
+
 
 /* This function deletes the chosen question record of a chosen topic
    @param question records[MAX_RECORDS] - question records
@@ -799,38 +789,6 @@ deleteRecord(struct question records[MAX_RECORDS],
     return nCount;
 }
 
-//TO BE CHECKED AGAIN
-/* This function checks if a file exists in the current directory
-   @param sFilename - the name of the file to check
-   @return 1 if the file exists, 0 otherwise
-*/
-int
-checkFileExists(str30 sFileName)
-{
-    /* Declares a file pointer and a variable to store the file existence status */
-    FILE *fptr;
-    int nFileExists;
-
-    /* Attempts to open the file for reading */
-    fptr = fopen(sFileName, "r");
-
-    /* If the file doesn't exist, set the status variable to 0 */
-    if (fptr == NULL)
-    {
-        nFileExists = 0;
-    }
-    /* If the file does exist, close the file and set the status variable to 1 */
-    else
-    {
-        fclose(fptr);
-        nFileExists = 1;
-    }
-
-    /* Returns the file existence status */
-    return nFileExists;
-}
-
-//TO BE CHECKED AGAIN
 /* This function reads questions from a file and stores them in a struct array.
    @param sFileName - the name of the file to read questions from
    @param records[MAX_RECORDS] - an array of structs to store the questions in
@@ -843,74 +801,77 @@ readData(str30 sFileName,
          int nMaxQst)
 {
     FILE *fptr;
-    str50 sTopic, sChoices;
+    int nRecordInd = 0, nChoiceInd, nQNum;
+    str50 sTopic, sChoices[MAX_CHOICES], sCorrAns;
     str200 sQText;
-    int nQNum, nCorrAns;
-    int nQCount = 0;
-    int nResult = 0;
-    int nChoiceInd = 0;
 
-    /* Checks if file exists */
-    if (!checkFileExists(sFileName))
-    {
-        printf("Error: File not found\n");
-    }
+    /* Appends ".txt" extension to the filename */
+    strcat(sFileName, ".txt");
 
-    /* Opens the file for reading */
+    /* Opens file for reading */
     fptr = fopen(sFileName, "r");
     if (fptr == NULL)
     {
-        printf("Error: Could not open file\n");
+        printf("Failed to open file.\n");
+        return -1;
     }
-
-    /* Reads questions from file */
-    while (nQCount < nMaxQst && fscanf(fptr, "%49s %d\n", sTopic, &nQNum) == 2)
+    else
     {
-        /* Reads question text */
-        if (fgets(sQText, sizeof(sQText), fptr) == NULL)
+        /* Reads question records from file in specified format */
+        while (nRecordInd < nMaxQst && !feof(fptr))
         {
-            printf("Error: Invalid file format\n");
-        }
-        removeNewLine(sQText);
+            /* Reads topic */
+            fgets(sTopic, MAX_STR_LEN, fptr);
+            removeNewLine(sTopic);
 
-        /* Read choices */
-        nChoiceInd = 0;
-        while (nChoiceInd < MAX_CHOICES &&
-               fgets(sChoices, sizeof(sChoices), fptr) != NULL)
-        {
-            removeNewLine(sChoices);
-            strcpy(records[nQCount].sChoices[nChoiceInd], sChoices);
-            nChoiceInd++;
-        }
-        if (nChoiceInd != MAX_CHOICES)
-        {
-            printf("Error: Invalid file format\n");
+            /* Reads question number */
+            fscanf(fptr, "%d", &nQNum);
+            fgetc(fptr);
+
+            /* Reads question */
+            fgets(sQText, MAX_QTEXT_LEN, fptr);
+            removeNewLine(sQText);
+
+            /* Reads choices */
+            for (nChoiceInd = 0; nChoiceInd < 3; nChoiceInd++)
+            {
+                fgets(sChoices[nChoiceInd], MAX_STR_LEN, fptr);
+                removeNewLine(sChoices[nChoiceInd]);
+            }
+
+            /* Reads correct answer in string then finds the choice number equivalent */
+            fgets(sCorrAns, MAX_STR_LEN, fptr);
+            removeNewLine(sCorrAns);
+            for (nChoiceInd = 0; nChoiceInd < 3; nChoiceInd++)
+            {
+                if (strcmp(sCorrAns, sChoices[nChoiceInd]) == 0)
+                {
+                    records[nRecordInd].nCorrAns = nChoiceInd + 1;
+                }
+            }
+
+            /* Save the record to the struct */
+            strcpy(records[nRecordInd].sTopic, sTopic);
+            records[nRecordInd].nQNum = nQNum;
+            strcpy(records[nRecordInd].sQText, sQText);
+            for (nChoiceInd = 0; nChoiceInd < 3; nChoiceInd++)
+            {
+                strcpy(records[nRecordInd].sChoices[nChoiceInd], sChoices[nChoiceInd]);
+            }
+
+            nRecordInd++;
+            /* Read the new line separating the previous record from the next one */
+            fgetc(fptr);
         }
 
-        /* Reads correct answer */
-        if (fscanf(fptr, " %d\n", &nCorrAns) != 1)
-        {
-            printf("Error: Invalid file format\n");
-        }
+        /* Closes file */
+        fclose(fptr);
 
-        /* Copies data into struct */
-        strcpy(records[nQCount].sTopic, sTopic);
-        records[nQCount].nQNum = nQNum;
-        strcpy(records[nQCount].sQText, sQText);
-        records[nQCount].nCorrAns = nCorrAns;
-
-        nQCount++;
+        /* Returns number of records read */
+        return nRecordInd;
     }
-
-    /* Closes the file */
-    fclose(fptr);
-
-    /* Sets the number of questions read */
-    nResult = nQCount;
-    return nResult;
 }
 
-//TO BE CHECKED AGAIN
 /* This function writes the question records to a file in the specified format.
    @param sFileName - the name of the file to read questions from
    @param records[MAX_RECORDS] - an array of structs to store the questions in
@@ -923,6 +884,9 @@ writeData(str30 sFileName,
 {
     FILE *fptr;
     int nRecordInd, nChoiceInd;
+
+    /* Appends ".txt" extension to the filename */
+    strcat(sFileName, ".txt");
 
     /* Opens file for writing */
     fptr = fopen(sFileName, "w");
@@ -942,10 +906,12 @@ writeData(str30 sFileName,
             /* Writes answer choices to file */
             for (nChoiceInd = 0; nChoiceInd < MAX_CHOICES; nChoiceInd++)
             {
-                fprintf(fptr, "%s\n", records[nChoiceInd].sChoices[nChoiceInd]);
+                fprintf(fptr, "%s\n", records[nRecordInd].sChoices[nChoiceInd]);
             }
 
-            fprintf(fptr, "%d\n\n", records[nRecordInd].nCorrAns);
+            /* Writes correct answer as a string */
+            fprintf(fptr, "%s\n\n",
+            records[nRecordInd].sChoices[records[nRecordInd].nCorrAns - 1]);
         }
 
         /* Closes file */
@@ -953,7 +919,6 @@ writeData(str30 sFileName,
     }
 }
 
-//TO BE CHECKED AGAIN
 /* This function imports question records from a file given the filename
    @param records[MAX_RECORDS] - an array of structs to store the questions in
    @param nMaxQst - the maximum number of questions to read from the file
@@ -961,7 +926,7 @@ writeData(str30 sFileName,
 */
 int
 importData(struct question records[MAX_RECORDS],
-           int nMaxQst) 
+           int nMaxQst)
 {
     str30 sFileName;
     int nQCount;
@@ -970,35 +935,26 @@ importData(struct question records[MAX_RECORDS],
     getchar();
 
     /* Prompts the user to enter the filename */
-    printf("\nEnter filename: ");
+    printf("\nEnter filename (Do not include the file extension, e.g. .txt): ");
     fgets(sFileName, sizeof(sFileName), stdin);
 
-    /*Removes the newline character from the filename*/
+    /* Removes the newline character from the filename */
     removeNewLine(sFileName);
 
-    /* Reads the questions from the file and stores them in the records array
-       using the readData function */
+    /* Reads data from file */
     nQCount = readData(sFileName, records, nMaxQst);
-
-    /* Checks if the readData function failed to open the file */
     if (nQCount == -1)
     {
-
-        /* Prints an error message if the file could not be opened */
-        printf("Failed to open file.\n\n");
+        printf("Failed to import data.\n\n");
     }
     else
     {
-
-        /* Prints a success message if the data was imported successfully */
-        printf("Data successfully imported from %s.\n\n", sFileName);
+        printf("Successfully imported data.\n\n");
     }
 
-    /* Returns the number of questions imported */
     return nQCount;
 }
 
-//TO BE CHECKED AGAIN
 /* This function exports the question records to a text file
    with the specified filename. The data in this exported file
    can be used in the import option.
@@ -1011,7 +967,6 @@ exportData(struct question records[MAX_RECORDS],
            int nQCount)
 {
     str30 sFileName;
-    int nIndex;
     FILE* fptr;
 
     /* Removes new line entered */

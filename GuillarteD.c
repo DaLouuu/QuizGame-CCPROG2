@@ -1,19 +1,22 @@
-/*
-Description: The program is a general knowledge quiz game that offers a venue
-			 for people to test their general knowledge.
-Programmed by: Dana Louise A. Guillarte S23A
-Last modified: April 5, 2023
+/******************************************
+File Name: GuillarteD.c
+Author: Dana Louise A. Guillarte
+Section: S23A
+Last Update: April 6, 2023
+The program is a general knowledge quiz game that offers a venue
+for people to test their general knowledge.
 Version: 9
-Acknowledgements:  
-*/
+Acknowledgements:
+******************************************/
 
-/*********************************************************************************************************
-This is to certify that this project is my own work, based on my personal efforts in studying and applying the concepts
-learned. I have constructed the functions and their respective algorithms and corresponding code by myself. The
-program was run, tested, and debugged by my own efforts. I further certify that I have not copied in part or whole or
-otherwise plagiarized the work of other students and/or persons.
-Dana Louise Guillarte, DLSU ID# 12207101
-*********************************************************************************************************/
+/************************************************************************************
+This is to certify that this project is my own work, based on my personal efforts in
+studying and applying the concepts learned. I have constructed the functions and
+their respective algorithms and corresponding code by myself. The program was run,
+tested, and debugged by my own efforts. I further certify that I have not copied in
+part or whole or otherwise plagiarized the work of other students and/or persons.
+                                             Dana Louise Guillarte, DLSU ID# 12207101
+*************************************************************************************/
 
 #include "GuillarteDFunc.c"
 

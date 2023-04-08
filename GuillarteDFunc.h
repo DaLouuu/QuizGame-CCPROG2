@@ -68,7 +68,7 @@ displayQuestions(struct question records[MAX_RECORDS],
                  int nCount,
                  char* pTopic,
                  int arrQstIndices[MAX_RECORDS],
-                 int *pQstNum);
+                 int* pQstNum);
 
 void
 displayQuestion(struct question record);
