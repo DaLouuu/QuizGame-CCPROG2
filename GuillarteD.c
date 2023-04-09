@@ -2,7 +2,7 @@
 File Name: GuillarteD.c
 Author: Dana Louise A. Guillarte
 Section: S23A
-Last Update: April 6, 2023
+Last Update: April 10, 2023
 The program is a general knowledge quiz game that offers a venue
 for people to test their general knowledge.
 Version: 9
@@ -27,16 +27,18 @@ main()
 	str20 adminPass = "admin123";
 	
 	/* Choice to start program */
-	int nMenuChoice = 100;
+	int nMenuChoice;
 
     /* Initial number of records to be modified */
     int nRecords = 0;
+
+    /* Array of question records */
+    struct question arrRecords[MAX_RECORDS];
     
     do
     {
         /* Ensures that the title screen won't keep popping up after invalid input */
-        if (nMenuChoice == 100)
-            displayMenu();
+		displayMenu();
         
         /* Gets main choice from user input */
         nMenuChoice = promptChoice(1, 3);
@@ -56,6 +58,7 @@ main()
                 else
                 {
                     printf("\nYou have selected play mode\n\n");
+                    displayPlayMenu(arrRecords, nRecords);
                 }
                 nMenuChoice = 100;
                 break;
@@ -63,7 +66,7 @@ main()
             /* Selects manage data */
             case 2:
                 printf("\nYou have selected manage data mode\n\n");
-                nRecords = login(adminPass, nRecords);
+                nRecords = login(adminPass, nRecords, arrRecords);
                 nMenuChoice = 100;
                 break;
                 
