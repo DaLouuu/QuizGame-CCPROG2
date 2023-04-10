@@ -24,17 +24,17 @@ typedef char str20 [MAX_PASS_LEN];
 
 struct question
 {
-	str50 sTopic;
-	int nQNum;
-	str200 sQText;
-	str50 sChoices[MAX_CHOICES];
-	int nCorrAns;
+    str50 sTopic;
+    int nQNum;
+    str200 sQText;
+    str50 sChoices[MAX_CHOICES];
+    int nCorrAns;
 };
 
 struct score
 {
-	str50 sName;
-	int nScore;
+    str50 sName;
+    int nScore;
 };
 
 void
@@ -42,7 +42,7 @@ displayMenu();
 
 int
 promptChoice(int nMin,
-             int nMax);
+			 int nMax);
 
 int
 login(str20 sAdminPass,
@@ -53,30 +53,28 @@ int
 manageData(int nRecords,
            struct question records[MAX_RECORDS]);
 
-void
-removeDuplicates(struct question records[MAX_RECORDS],
-                 int* pCount);
-
 int
 findRecord(struct question records[MAX_RECORDS],
-           int nCount,
-           char* pQText,
-           char* pAnswer);
+		   int nCount,
+		   char* pQText,
+		   char* pAnswer);
 
 int getLastQNum(struct question records[MAX_RECORDS],
-                int nCount,
-                char* pTopic);
+				int nCount,
+				char* pTopic);
 
 int
 addRecord(struct question records[MAX_RECORDS],
-          int nCount);
+		  int nCount);
 
 void
 removeNewLine(char* pStr);
 
 void
 displayTopics(struct question records[MAX_RECORDS],
-              int nCount);
+              int nQCount, str50 sTopics[MAX_TOPICS],
+              int *nTopicCount,
+              int arrTopicIndices[MAX_RECORDS]);
 
 void
 displayQuestions(struct question records[MAX_RECORDS],
@@ -94,7 +92,7 @@ validateAnswer(struct question record,
 
 void
 editRecord(struct question records[MAX_RECORDS],
-           int nCount);
+		   int nCount);
 
 int
 deleteRecord(struct question records[MAX_RECORDS],
@@ -103,7 +101,8 @@ deleteRecord(struct question records[MAX_RECORDS],
 int
 readData(str30 sFileName,
          struct question records[MAX_RECORDS],
-         int nMaxQst);
+         int nMaxQst,
+         int nRecords);
 
 void
 writeData(str30 sFileName,
@@ -112,13 +111,8 @@ writeData(str30 sFileName,
 
 int
 importData(struct question records[MAX_RECORDS],
-           int nMaxQst);
-
-void
-displayGameTopics(struct question records[MAX_RECORDS],
-			int nQCount,
-			str50 sTopics[MAX_TOPICS],
-			int *nTopicCount);
+           int nMaxQst,
+           int nRecords);
 
 void
 exportData(struct question records[MAX_RECORDS],
@@ -140,4 +134,5 @@ saveScores(struct score scores[MAX_SCORES],
 void
 displayPlayMenu(struct question records[MAX_RECORDS],
                 int nTotalRecords);
+
 #endif
