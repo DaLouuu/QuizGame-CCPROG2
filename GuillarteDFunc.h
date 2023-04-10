@@ -59,9 +59,10 @@ findRecord(struct question records[MAX_RECORDS],
 		   char* pQText,
 		   char* pAnswer);
 
-int getLastQNum(struct question records[MAX_RECORDS],
-				int nCount,
-				char* pTopic);
+int
+getLastQNum(struct question records[MAX_RECORDS],
+			int nCount,
+			char* pTopic);
 
 int
 addRecord(struct question records[MAX_RECORDS],
