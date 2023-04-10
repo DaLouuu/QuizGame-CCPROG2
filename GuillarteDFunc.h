@@ -114,10 +114,6 @@ int
 importData(struct question records[MAX_RECORDS],
            int nMaxQst);
 
-int
-compareTopics(const void *a,
-              const void *b);
-
 void
 displayGameTopics(struct question records[MAX_RECORDS],
 			int nQCount,

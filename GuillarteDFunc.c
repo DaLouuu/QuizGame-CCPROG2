@@ -1147,10 +1147,11 @@ playGame(struct question records[MAX_RECORDS],
          int *pScoreCount)
 {
     str30 sPlayerName;
-	int nQInd, nTopicInd, nRand, nAnswer, nQuestionsFound;
+	int nQInd, nTopicInd, nRand, nAnswer, nQuestionsFound, i;
     int nChoice = -1;
     int nScore = 0;
     int nTopicCount = 0;
+	int nFoundMatch = 0;
     int arrTopicIndices[MAX_RECORDS];
     str50 sTopics[MAX_TOPICS];
 
@@ -1246,13 +1247,32 @@ playGame(struct question records[MAX_RECORDS],
 		}
     }
 
-    /* Displays the final score */
-    printf("\nFinal Score: %d\n", nScore);
+    /* Checks if the player's score is already in the scores array */
+	for (i = 0; i < *pScoreCount; i++)
+	{
+    	if (strcmp(scores[i].sName, sPlayerName) == 0)
+		{
+			/* Adds the player's score to the existing score */
+       		scores[i].nScore += nScore;
 
-    /* Add the score to the scores array */
-    strcpy(scores[*pScoreCount].sName, sPlayerName);
-    scores[*pScoreCount].nScore = nScore;
-    (*pScoreCount)++;
+			/* Displays the player's new score */
+			printf("\n%s's new score: %d\n\n", sPlayerName, scores[i].nScore);
+
+			/* Sets the foundMatch flag to 1 */
+       		nFoundMatch = 1;
+   		}
+	}
+	
+	/* Adds the player's score to the scores array if no match found */
+	if (!nFoundMatch)
+	{
+    	strcpy(scores[*pScoreCount].sName, sPlayerName);
+    	scores[*pScoreCount].nScore = nScore;
+    	(*pScoreCount)++;
+
+		/* Displays the player's score */
+		printf("\n%s's score: %d\n\n", sPlayerName, nScore);
+	}
 }
 
 /* This function displays the scores of the players in descending order.
