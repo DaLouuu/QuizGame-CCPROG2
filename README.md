@@ -62,12 +62,13 @@ The original repository placed all source, binary, documentation, and data files
 
 ```text
 QuizGame-CCPROG2/
-├── .gitignore                      # Ignore compiled binaries, object files, and IDE artifacts
-├── Makefile                        # Build automation script for compiling the project
-├── README.md                       # Comprehensive project documentation
+├── .gitignore                      # Git ignore file for binaries and object files
+├── Makefile                        # Build automation script
+├── README.md                       # Complete documentation and setup guide
 │
-├── bin/                            # Output directory for compiled executables (git-ignored)
-│   └── QuizGame.exe
+├── bin/                            # Output directory for compiled executables
+│   ├── QuizGame.exe
+│   └── GuillarteD.exe
 │
 ├── data/                           # Question datasets and runtime files
 │   ├── GuillarteDImport.txt        # Initial question bank dataset
@@ -80,16 +81,20 @@ QuizGame-CCPROG2/
 ├── include/                        # Header declarations (.h)
 │   └── GuillarteDFunc.h            # Struct definitions, macros, and function prototypes
 │
-└── src/                            # Implementation files (.c)
-    ├── GuillarteD.c                # Main entry point and main menu loop
-    └── GuillarteDFunc.c            # Implementation of game logic and admin operations
+├── src/                            # Implementation files (.c)
+│   ├── GuillarteD.c                # Main entry point and main menu loop
+│   └── GuillarteDFunc.c            # Implementation of game logic and admin operations
+│
+└── tests/                          # Automated testing suite
+    └── test_runner.c               # Test cases for game mechanics and data structures
 ```
 
 ### Key Architectural Separation of Concerns:
 1. **`src/` & `include/`**: Isolates code implementation and interfaces, preventing cluttered root directories and facilitating modular multi-file builds.
 2. **`data/`**: Groups text files used for persistent storage and import/export operations.
 3. **`docs/`**: Retains academic requirements, specifications, and test cases separate from production code.
-4. **`bin/`**: Keeps transient compilation binaries out of version control.
+4. **`bin/`**: Keeps transient compilation binaries organized and out of the source tree.
+5. **`tests/`**: Contains automated validation scripts to test functionality before deployment.
 
 ---
 
@@ -136,15 +141,30 @@ Ottawa
 - Windows Command Prompt or PowerShell (supports `<conio.h>` and Windows console commands)
 
 ### Compilation
-Compile using GCC with full warnings enabled:
 
+Using the provided **Makefile**:
 ```bash
-gcc -Wall -Wextra GuillarteD.c -o GuillarteD.exe
+make
+```
+
+Or manually using GCC with full warnings:
+```bash
+gcc -Wall -Wextra -Iinclude src/GuillarteD.c src/GuillarteDFunc.c -o bin/QuizGame.exe
 ```
 
 ### Running the Application
 ```bash
-./GuillarteD.exe
+make run
+# or directly:
+./bin/QuizGame.exe
+```
+
+### Running Automated Verification Tests
+```bash
+make test
+# or manually:
+gcc -Wall -Wextra -Iinclude tests/test_runner.c src/GuillarteDFunc.c -o tests/test_runner.exe
+./tests/test_runner.exe
 ```
 
 ---

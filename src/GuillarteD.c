@@ -18,7 +18,7 @@ part or whole or otherwise plagiarized the work of other students and/or persons
                                              Dana Louise Guillarte, DLSU ID# 12207101
 *************************************************************************************/
 
-#include "GuillarteDFunc.c"
+#include "GuillarteDFunc.h"
 
 int main()
 {

@@ -1078,6 +1078,13 @@ readData(char* sFileName,
     fptr = fopen(sFileName, "r");
     if (fptr == NULL)
     {
+        char sDataPath[MAX_FILE_LEN + 10];
+        sprintf(sDataPath, "data/%s", sFileName);
+        fptr = fopen(sDataPath, "r");
+    }
+
+    if (fptr == NULL)
+    {
         printf("Failed to open file.\n");
         nRecords = -1;
     }
@@ -1187,6 +1194,13 @@ writeData(str30 sFileName,
 
     /* Opens file for writing */
     fptr = fopen(sFileName, "w");
+    if (fptr == NULL)
+    {
+        char sDataPath[MAX_FILE_LEN + 10];
+        sprintf(sDataPath, "data/%s", sFileName);
+        fptr = fopen(sDataPath, "w");
+    }
+
     if (fptr == NULL)
     {
         printf("Failed to open file.\n");
@@ -1512,7 +1526,11 @@ loadScores(struct score scores[MAX_SCORES])
     int nReadInd = 0;
 
     /* Opens file for reading */
-    fptr = fopen("score.txt", "r");
+    fptr = fopen("data/score.txt", "r");
+    if (fptr == NULL)
+    {
+        fptr = fopen("score.txt", "r");
+    }
 
     /* Checks if the file exists */
     if (fptr == NULL)
@@ -1557,7 +1575,11 @@ saveScores(struct score scores[MAX_SCORES],
     int i;
 
     /* Opens file for writing */
-    fptr = fopen("score.txt", "w");
+    fptr = fopen("data/score.txt", "w");
+    if (fptr == NULL)
+    {
+        fptr = fopen("score.txt", "w");
+    }
 
     /* Checks if the file exists */
     if (fptr == NULL)
