@@ -96,4 +96,6 @@ int main()
                 break;
         }
     } while (nMenuChoice != 3);
+
+    return 0;
 }

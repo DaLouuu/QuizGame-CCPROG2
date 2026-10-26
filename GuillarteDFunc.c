@@ -479,10 +479,10 @@ addRecord(struct question records[MAX_RECORDS],
     /* Gets the question and answer from the user */
     printf("\nEnter question: ");
     getchar();
-    fgets(sQText, MAX_STR_LEN, stdin);
+    fgets(sQText, sizeof(sQText), stdin);
     removeNewLine(sQText);
     printf("Enter answer: ");
-    fgets(sAnswer, MAX_STR_LEN, stdin);
+    fgets(sAnswer, sizeof(sAnswer), stdin);
     removeNewLine(sAnswer);
 
     /* Checks if the question-answer pair already exists */
@@ -783,7 +783,7 @@ editRecord(struct question records[MAX_RECORDS],
     int nQstIndices[MAX_RECORDS];
     str50 sTopics[MAX_TOPICS];
     str50 sNewTopic;
-    str50 sNewQText;
+    str200 sNewQText;
     str50 sNewChoice;
     str50 sNewAns;
     str50 sSelectedTopic;
@@ -1084,11 +1084,14 @@ readData(char* sFileName,
     else
     {
         /* Reads question records from file in specified format */
-        while (nRecordInd < nMaxQst && !feof(fptr))
+        while (nRecordInd < nMaxQst && fgets(sTopic, MAX_STR_LEN, fptr) != NULL)
         {
             /* Reads topic */
-            fgets(sTopic, MAX_STR_LEN, fptr);
             removeNewLine(sTopic);
+            if (strlen(sTopic) == 0)
+            {
+                continue;
+            }
 
             /* Reads question number */
             fscanf(fptr, "%d", &nQNum);
@@ -1515,6 +1518,7 @@ loadScores(struct score scores[MAX_SCORES])
     if (fptr == NULL)
     {
         printf("No scores found.\n\n");
+        return 0;
     }
 
     /* Reads the name and score from the file */
@@ -1559,6 +1563,7 @@ saveScores(struct score scores[MAX_SCORES],
     if (fptr == NULL)
     {
         printf("Error writing scores.\n");
+        return;
     }
 
     /* Writes the name and score to the file */
@@ -1578,7 +1583,7 @@ void
 displayPlayMenu(struct question records[MAX_RECORDS],
                 int nTotalRecords)
 {
-    int nChoice;
+    int nChoice = 0;
     int nTotalScores = 0;
 
     /* Array of structs to store the scores */

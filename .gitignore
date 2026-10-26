@@ -1,0 +1,10 @@
+# Executables and objects
+*.exe
+*.o
+*.obj
+
+# Temporary / test files
+*_test.*
+.vscode/
+.idea/
+*.swp

@@ -133,6 +133,10 @@ saveScores(struct score scores[MAX_SCORES],
            int nTotalScores);
 
 void
+viewScores(struct score scores[MAX_SCORES],
+           int nTotalScores);
+
+void
 displayPlayMenu(struct question records[MAX_RECORDS],
                 int nTotalRecords);
 
